@@ -1,4 +1,5 @@
 # Archivo de configuraciones a cargo de León! 
+# Configuraciones principales del juego
 
 import pygame
 import sys
