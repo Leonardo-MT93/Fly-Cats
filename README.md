@@ -1,4 +1,4 @@
-# 🐱 FLY CATS
+# TP Programación 1 - UTNFRA: 🐱 FLY CATS
 
 ![Fly Cats Cover](assets/images/portada.png)
 
@@ -103,11 +103,9 @@ Los assets del juego incluyen:
 ## 🏆 Objetivos del Proyecto
 
 Este proyecto es parte del curso de Programación 1 de la UTN, enfocado en:
-- Programación orientada a objetos
 - Manejo de eventos y colisiones
 - Trabajo colaborativo con Git/GitHub
 - Desarrollo de videojuegos con Python/Pygame
-- **Sinergia de equipo:** Combinar fortalezas individuales para resultados excepcionales
 
 ## 📈 Estado del Desarrollo
 
