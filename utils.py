@@ -1,3 +1,5 @@
+# Archivo de configuraciones a cargo de León! 
+
 import pygame
 
 def load_image(width, height, color=(255, 0, 255)):

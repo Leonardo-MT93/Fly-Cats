@@ -1,3 +1,5 @@
+# Archivo de configuraciones a cargo de León! 
+
 import pygame
 import sys
 
