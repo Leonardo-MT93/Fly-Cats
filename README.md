@@ -60,8 +60,8 @@
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/Leonardo-MT93/Tp---Programacion1---UTN.git
-cd Tp---Programacion1---UTN
+git clone https://github.com/Leonardo-MT93/Tp---Programacion1---UTN.git fly-cats-game
+cd fly-cats-game
 
 # Instalar dependencias
 pip install pygame
@@ -73,7 +73,7 @@ python main.py
 ## 📁 Estructura del Proyecto
 
 ```
-Tp---Programacion1---UTN/
+fly-cats-game/
 ├── assets/                 # Recursos gráficos y sonoros
 │   ├── images/            # Imágenes del juego
 │   ├── player/            # Sprites del jugador (🦋 Agostina)
