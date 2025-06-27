@@ -1,97 +1,206 @@
 # Archivo de configuraciones a cargo de León! 
+
 import pygame
-import sys
+from config import *
 
-NOMBRE_JUEGO = "Fly Cats"
-
-def mostrar_menu():
-    print("Bienvenido a", NOMBRE_JUEGO)
-    print("1. Jugar")
-    print("2. Puntajes")
-    print("3. Salir")
+def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
+    """Dibuja el menú principal del juego"""
+    font_titulo = pygame.font.Font(None, 72)
+    font_botones = pygame.font.Font(None, 48)
+    font_small = pygame.font.Font(None, 32)
     
-    opcion = input("Selecciona una opción: ")
+    color_verde = (0, 255, 0)
+    color_blanco = (255, 255, 255)
+    color_amarillo = (255, 255, 0)
+    color_fondo = (0, 0, 0)
     
-    if opcion == "1":
-        iniciar_juego()
-    elif opcion == "2":
-        salir_juego()
-    else:
-        print("Opción no válida. Inténtalo de nuevo.")
-        mostrar_menu()
-
-
-def iniciar_juego():
-    print("Iniciando el juego...")
-    # Aquí iría la lógica del juego
-    # Por ahora, solo mostramos un mensaje de prueba
-    print("¡Juego iniciado! (Lógica del juego aún no implementada)")
+    # Dibujar fondo
+    screen.blit(imagen_fondo, (0, 0))
     
-    # Después de iniciar el juego, podrías volver al menú o salir
-    mostrar_menu()
-
-def salir_juego():
-    print("Saliendo del juego...")
-    # Aquí podrías guardar puntajes o realizar otras acciones antes de salir
-    print("¡Gracias por jugar!", NOMBRE_JUEGO)
-    exit()
-
-def manejar_input_menu():
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                salir_juego()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    iniciar_juego()
-                elif event.key == pygame.K_2:
-                    print("Mostrando puntajes... (Funcionalidad aún no implementada)")
-                elif event.key == pygame.K_3:
-                    salir_juego()
-                else:
-                    print("Opción no válida. Presiona 1, 2 o 3.")
-
-def menu_principal():
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption(NOMBRE_JUEGO)
-    
-    # Lógica del menú principal
-    mostrar_menu()
-    
-    while True:
-        manejar_input_menu()
-        pygame.display.flip()
-
-def comenzar_juego():
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption(NOMBRE_JUEGO)
-    
-    # Aquí podrías iniciar la lógica del juego
-    print("¡Juego iniciado! (Lógica del juego aún no implementada)")
-    
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                salir_juego()
+    # Opciones del menú
+    y_start = 350
+    for i, opcion in enumerate(opciones):
+        if i == opcion_seleccionada:
+            if contador_parpadeo % 30 < 15:
+                color = color_amarillo
+            else:
+                color = color_blanco
+        else:
+            color = color_blanco
         
-        screen.fill((0, 0, 0))  # Limpiar pantalla
+        texto = font_botones.render(opcion, True, color)
+        x = SCREEN_WIDTH // 2 - texto.get_width() // 2
+        y = y_start + i * 60
+        
+        if i == opcion_seleccionada:
+            indicador = font_botones.render(">", True, color_amarillo)
+            screen.blit(indicador, (x - 50, y))
+        
+        screen.blit(texto, (x, y))
+    
+    # Instrucciones para que el usuario sepa cómo navegar en el juego..
+    instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
+                                   True, color_verde)
+    instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
+    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 50))
+
+def mostrar_menu_principal(screen, clock, imagen_fondo):
+    """Pantalla del menú principal"""
+    opciones = ["JUGAR", "PUNTUACIONES", "OPCIONES", "SALIR"]
+    opcion_seleccionada = 0
+    contador_parpadeo = 0
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "SALIR"
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    opcion_seleccionada = (opcion_seleccionada - 1) % len(opciones)
+                elif event.key == pygame.K_DOWN:
+                    opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
+                elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    return opciones[opcion_seleccionada]
+        
+        contador_parpadeo += 1
+        dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo)
+        
         pygame.display.flip()
+        clock.tick(60)
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption(NOMBRE_JUEGO)
+def pantalla_juego(screen, clock):
+    """Pantalla de juego - completamente negra para completar por Vish/Agos"""
+    font_small = pygame.font.Font(None, 32)
+    color_verde = (0, 255, 0)
     
-    # Mostrar el menú principal
-    menu_principal()
-    
-    # Iniciar el juego
-    comenzar_juego()
-    
-    pygame.quit()
-    sys.exit()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "SALIR"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return "MENU"
+                elif event.key == pygame.K_5:
+                    return "GAME_OVER"  # Simular fin del juego con tecla 5
+        
+        # Pantalla completamente negra
+        screen.fill((0, 0, 0))
+        
+        # Texto de instrucciones en verde para el usuario
+        instrucciones = [
+            "ESC - Volver al menú",
+            "5 - Simular fin del juego"
+        ]
+        
+        for i, instruccion in enumerate(instrucciones):
+            texto = font_small.render(instruccion, True, color_verde)
+            x = 20  # Margen izquierdo
+            y = 20 + i * 35  # Espaciado vertical
+            screen.blit(texto, (x, y))
+        
+        pygame.display.flip()
+        clock.tick(60)
 
-if __name__ == "__main__":
-    main()
+def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo, puntuacion=0):
+    """Dibuja la pantalla de game over"""
+    font_titulo = pygame.font.Font(None, 72)
+    font_subtitulo = pygame.font.Font(None, 48)
+    font_botones = pygame.font.Font(None, 36)
+    font_small = pygame.font.Font(None, 28)
+    
+    color_rojo = (255, 0, 0)
+    color_blanco = (255, 255, 255)
+    color_amarillo = (255, 255, 0)
+    color_verde = (0, 255, 0)
+    color_fondo = (0, 0, 0)
+    
+    # Dibujar fondo (igual que el menú principal)
+    screen.blit(imagen_fondo, (0, 0))
+    # Capa semi-transparente para efecto dramático
+    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    overlay.set_alpha(150)
+    overlay.fill((0, 0, 0))
+    screen.blit(overlay, (0, 0))
+    
+    #Checklist: Título GAME OVER
+    titulo = font_titulo.render("GAME OVER", True, color_rojo)
+    titulo_x = SCREEN_WIDTH // 2 - titulo.get_width() // 2
+    screen.blit(titulo, (titulo_x, 80))
+    
+    #Checklist: Puntuación final ficticio - falta implementar
+    puntuacion_texto = font_subtitulo.render(f"Puntuación Final: {puntuacion}", True, color_amarillo)
+    punt_x = SCREEN_WIDTH // 2 - puntuacion_texto.get_width() // 2
+    screen.blit(puntuacion_texto, (punt_x, 180))
+    
+    # Mensaje motivacional de fin del juego
+    mensajes = [
+        "¡Los invasores han ganado esta vez!",
+        "¡Pero la Tierra aún tiene esperanza!",
+        "¿Intentarás defender el planeta otra vez?"
+    ]
+    
+    for i, mensaje in enumerate(mensajes):
+        texto = font_small.render(mensaje, True, color_blanco)
+        x = SCREEN_WIDTH // 2 - texto.get_width() // 2
+        screen.blit(texto, (x, 250 + i * 30))
+    
+    # Opciones del menú
+    y_start = 380
+    for i, opcion in enumerate(opciones):
+        if i == opcion_seleccionada:
+            if contador_parpadeo % 30 < 15:
+                color = color_amarillo
+            else:
+                color = color_blanco
+        else:
+            color = color_blanco
+        
+        texto = font_botones.render(opcion, True, color)
+        x = SCREEN_WIDTH // 2 - texto.get_width() // 2
+        y = y_start + i * 50
+        
+        if i == opcion_seleccionada:
+            indicador = font_botones.render(">", True, color_amarillo)
+            screen.blit(indicador, (x - 40, y))
+        
+        screen.blit(texto, (x, y))
+    
+    # Instrucciones PARA navegar en el menu 
+    instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
+                                   True, color_verde)
+    instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
+    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 40))
+
+def pantalla_game_over(screen, clock, imagen_fondo, puntuacion=0):
+    """Pantalla de fin del juego"""
+    opciones = ["JUGAR DE NUEVO", "MENÚ PRINCIPAL", "SALIR"]
+    opcion_seleccionada = 0
+    contador_parpadeo = 0
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "SALIR"
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    opcion_seleccionada = (opcion_seleccionada - 1) % len(opciones)
+                elif event.key == pygame.K_DOWN:
+                    opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
+                elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    if opciones[opcion_seleccionada] == "JUGAR DE NUEVO":
+                        return "JUGAR"
+                    elif opciones[opcion_seleccionada] == "MENÚ PRINCIPAL":
+                        return "MENU"
+                    elif opciones[opcion_seleccionada] == "SALIR":
+                        return "SALIR"
+        
+        contador_parpadeo += 1
+        dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo, puntuacion)
+        
+        pygame.display.flip()
+        clock.tick(60)
+ 
+
+
