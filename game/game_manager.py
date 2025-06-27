@@ -1,11 +1,11 @@
 # Archivo de configuraciones a cargo de León! 
 
 import pygame
-from config import *
+from config import SCREEN_WIDTH, SCREEN_HEIGHT
+from utils import cargar_imagen_fondo, cargar_musica, reproducir_musica, detener_musica
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
-    font_titulo = pygame.font.Font(None, 72)
     font_botones = pygame.font.Font(None, 48)
     font_small = pygame.font.Font(None, 32)
     
@@ -42,17 +42,22 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
     instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
                                    True, color_verde)
     instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
-    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 50))
+    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30)) #Posicion de la instruccion en el eje Y
 
 def mostrar_menu_principal(screen, clock, imagen_fondo):
     """Pantalla del menú principal"""
     opciones = ["JUGAR", "PUNTUACIONES", "OPCIONES", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
+
+    # Reproducir música del menú
+    cargar_musica("assets/sounds/music/menu_music.ogg")
+    reproducir_musica(volumen=0.5)
     
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                detener_musica()
                 return "SALIR"
             
             if event.type == pygame.KEYDOWN:
@@ -61,6 +66,7 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
                 elif event.key == pygame.K_DOWN:
                     opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
                 elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    detener_musica()  # Detener música al salir del menú
                     return opciones[opcion_seleccionada]
         
         contador_parpadeo += 1
@@ -170,17 +176,22 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
     instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
                                    True, color_verde)
     instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
-    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 40))
+    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30))
 
 def pantalla_game_over(screen, clock, imagen_fondo, puntuacion=0):
     """Pantalla de fin del juego"""
     opciones = ["JUGAR DE NUEVO", "MENÚ PRINCIPAL", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
+
+    # Reproducir música de game over
+    cargar_musica("assets/sounds/music/game_over_music.ogg")
+    reproducir_musica(volumen=0.6)
     
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                detener_musica()
                 return "SALIR"
             
             if event.type == pygame.KEYDOWN:
@@ -189,6 +200,7 @@ def pantalla_game_over(screen, clock, imagen_fondo, puntuacion=0):
                 elif event.key == pygame.K_DOWN:
                     opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
                 elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    detener_musica()  # Detener música al salir del menu findejuego
                     if opciones[opcion_seleccionada] == "JUGAR DE NUEVO":
                         return "JUGAR"
                     elif opciones[opcion_seleccionada] == "MENÚ PRINCIPAL":
