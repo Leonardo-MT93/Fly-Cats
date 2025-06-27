@@ -20,17 +20,17 @@
 - **Espíritu Animal:** Mariposa - Transformación elegante y vuelo grácil
 - **Poderes:** Metamorfosis de código, movimientos fluidos como el viento
 - **Responsabilidades:** Sistema de movimiento del jugador, controles, sistema de disparos
-- **Email:** [agostina.email@ejemplo.com](mailto:agostina.email@ejemplo.com)
-- **LinkedIn:** [linkedin.com/in/agostina-dev](https://linkedin.com/in/agostina-dev)
-- **GitHub:** [@AgostinaGithub](https://github.com/AgostinaGithub)
+- **Email:** Falta completar.
+- **LinkedIn:** Falta completar.
+- **GitHub:** Falta completar.
 
 ### 🐅 Vish - Enemies & PowerUps System
 - **Espíritu Animal:** Tigre Blanco - Cazadora misteriosa y letal
 - **Poderes:** Instinto depredador, precisión felina en cada línea de código
 - **Responsabilidades:** IA de enemigos, sistema de power-ups, balanceado del juego
-- **Email:** [vish.email@ejemplo.com](mailto:vish.email@ejemplo.com)
-- **LinkedIn:** [linkedin.com/in/vish-dev](https://linkedin.com/in/vish-dev)
-- **GitHub:** [@VishGithub](https://github.com/VishGithub)
+- **Email:**  Falta completar.
+- **LinkedIn:**  Falta completar.
+- **GitHub:** Falta completar.
 
 ### 🐾 Filosofía de La Triada
 *"En la naturaleza salvaje del desarrollo, cada animal aporta su esencia única. El León lidera con sabiduría, la Mariposa transforma con belleza, el Tigre ataca con precisión. Juntos, somos imparables."*
@@ -106,6 +106,12 @@ Este proyecto es parte del curso de Programación 1 de la UTN, enfocado en:
 - Manejo de eventos y colisiones
 - Trabajo colaborativo con Git/GitHub
 - Desarrollo de videojuegos con Python/Pygame
+
+## 🚫 No visto en la materia
+
+Este proyecto no debe tener los siguientes temas no visto en la cursada:
+- Try - Except
+- Clases de python
 
 ## 📈 Estado del Desarrollo
 
