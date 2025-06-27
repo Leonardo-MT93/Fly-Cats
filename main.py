@@ -1,44 +1,59 @@
-# Archivo de configuraciones a cargo de León! 
-
 import pygame
 import sys
+import random
+from config import *
+from utils import cargar_imagen_fondo
+from game.game_manager import mostrar_menu_principal, pantalla_juego, pantalla_game_over
 
 def main():
+    """Función principal que maneja todas las pantallas"""
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Space Invaders - Testeado con un puntito blanco xD")
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Fly Cats")
     clock = pygame.time.Clock()
     
-    # Variables del jugador (punto creado)
-    player_x = 400  # Posicion central del punto
-    player_y = 300
-    player_size = 38  # Tamaño del punto que se mueve con las teclas
-    player_speed = 5
+    #Checklist: Cargar imagen de fondo del juego - falta modificar
+    imagen_fondo = cargar_imagen_fondo("assets/images/portada.png")
     
-    running = True
-    while running:
-        # Evento para poder cerrar el juego si tocas la CRUZ
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        
-        # Comandos direccionales para manejar el punto ya creado
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            player_x -= player_speed
-        if keys[pygame.K_RIGHT]:
-            player_x += player_speed
-        if keys[pygame.K_UP]:
-            player_y -= player_speed
-        if keys[pygame.K_DOWN]:
-            player_y += player_speed
-        
-        
-        screen.fill((128, 0, 128))  # Color de fondo de la pantalla creada
-        pygame.draw.circle(screen, (255, 255, 255), (player_x + player_size//2, player_y + player_size//2), player_size//2)  # Color de l punto que se maneja con los direccionales. Todo en prueba
-        
-        pygame.display.flip()
-        clock.tick(60)
+    estado_actual = "MENU"
+    puntuacion_actual = 0
+    
+    while True:
+        if estado_actual == "MENU":
+            resultado = mostrar_menu_principal(screen, clock, imagen_fondo)
+            
+            if resultado == "JUGAR":
+                estado_actual = "JUEGO"
+                puntuacion_actual = 0
+            elif resultado == "PUNTUACIONES":
+                print("Mostrar puntuaciones...")  #Checklist: Falta terminar..
+            elif resultado == "OPCIONES":
+                print("Mostrar opciones...")  #Checklist: Falta terminar..
+            elif resultado == "SALIR":
+                break
+                
+        elif estado_actual == "JUEGO":
+            resultado = pantalla_juego(screen, clock)
+            
+            if resultado == "MENU":
+                estado_actual = "MENU"
+            elif resultado == "GAME_OVER":
+                #Checklist: Puntuación implementar.. 
+                puntuacion_actual = random.randint(1000, 9999)
+                estado_actual = "GAME_OVER"
+            elif resultado == "SALIR":
+                break
+                
+        elif estado_actual == "GAME_OVER":
+            resultado = pantalla_game_over(screen, clock, imagen_fondo, puntuacion_actual)
+            
+            if resultado == "JUGAR":
+                estado_actual = "JUEGO"
+                puntuacion_actual = 0
+            elif resultado == "MENU":
+                estado_actual = "MENU"
+            elif resultado == "SALIR":
+                break
     
     pygame.quit()
     sys.exit()

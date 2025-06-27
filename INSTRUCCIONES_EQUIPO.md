@@ -300,12 +300,6 @@ git stash pop
 
 ### 📝 FORMATO DE COMMITS (OPCIONAL PERO RECOMENDADO):
 
-#### 🎨 CON EMOJIS (Para darle personalidad):
-```bash
-🦁 León:     "🦁 Core: descripción"
-🦋 Agostina: "🦋 Player: descripción"  
-🐅 Vish:     "🐅 Enemies: descripción"
-```
 
 #### 📝 SIN EMOJIS (También válido):
 ```bash
@@ -314,15 +308,6 @@ Agostina: "Player: descripción"
 Vish:     "Enemies: descripción"
 ```
 
-#### ⌨️ CÓMO ESCRIBIR TU EMOJI ANIMAL:
-
-**🦋 AGOSTINA (Mariposa):**
-- **Windows:** Win + . (punto) → buscar "butterfly"  
-- **Mac:** Cmd + Control + Espacio → buscar "mariposa"
-
-**🐅 VISH (Tigre):**
-- **Windows:** Win + . (punto) → buscar "tiger"
-- **Mac:** Cmd + Control + Espacio → buscar "tigre"  
 
 ### 🆘 CUANDO PEDIR AYUDA:
 - Error que no puedes resolver en 30 min
