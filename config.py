@@ -8,9 +8,10 @@ FPS = 60
 COLOR_VERDE = (0, 255, 0)
 COLOR_BLANCO = (255, 255, 255)
 COLOR_AMARILLO = (255, 255, 0)
-COLOR_ROJO = (255, 0, 0)
+COLOR_GRIS = (180, 180, 180)
 COLOR_FONDO = (0, 0, 0)
 
 # Rutas de las imagenes
 RUTA_IMAGEN_FONDO_MENU_PRINCIPAL = "assets/images/portada.png"
-RUTA_IMAGEN_FIN_DEL_JUEGO = "assets/images/jugador.png"
+RUTA_IMAGEN_FIN_DEL_JUEGO = "assets/images/game_over.png"
+RUTA_ICONO_JUEGO = "assets/images/icono.png"

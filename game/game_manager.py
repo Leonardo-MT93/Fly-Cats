@@ -1,18 +1,17 @@
 # Archivo de configuraciones a cargo de León! 
 
 import pygame
-from config import SCREEN_WIDTH, SCREEN_HEIGHT
-from utils import cargar_imagen_fondo, cargar_musica, reproducir_musica, detener_musica
+from config import *
+from utils import  cargar_musica, reproducir_musica, detener_musica
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
     font_botones = pygame.font.Font(None, 48)
     font_small = pygame.font.Font(None, 32)
     
-    color_verde = (0, 255, 0)
-    color_blanco = (255, 255, 255)
-    color_amarillo = (255, 255, 0)
-    color_fondo = (0, 0, 0)
+    color_verde = COLOR_VERDE
+    color_blanco = COLOR_BLANCO
+    color_amarillo = COLOR_AMARILLO
     
     # Dibujar fondo
     screen.blit(imagen_fondo, (0, 0))
@@ -73,12 +72,12 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
         dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo)
         
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(FPS)
 
 def pantalla_juego(screen, clock):
     """Pantalla de juego - completamente negra para completar por Vish/Agos"""
     font_small = pygame.font.Font(None, 32)
-    color_verde = (0, 255, 0)
+    color_verde = COLOR_VERDE
     
     while True:
         for event in pygame.event.get():
@@ -106,33 +105,21 @@ def pantalla_juego(screen, clock):
             screen.blit(texto, (x, y))
         
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(FPS)
 
-def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo, puntuacion=0):
+def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion=0):
     """Dibuja la pantalla de game over"""
-    font_titulo = pygame.font.Font(None, 72)
     font_subtitulo = pygame.font.Font(None, 48)
     font_botones = pygame.font.Font(None, 36)
     font_small = pygame.font.Font(None, 28)
     
-    color_rojo = (255, 0, 0)
-    color_blanco = (255, 255, 255)
-    color_amarillo = (255, 255, 0)
-    color_verde = (0, 255, 0)
-    color_fondo = (0, 0, 0)
+    color_blanco = COLOR_BLANCO
+    color_amarillo = COLOR_AMARILLO
+    color_verde = COLOR_VERDE
+    color_gris = COLOR_GRIS
     
     # Dibujar fondo (igual que el menú principal)
-    screen.blit(imagen_fondo, (0, 0))
-    # Capa semi-transparente para efecto dramático
-    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-    overlay.set_alpha(150)
-    overlay.fill((0, 0, 0))
-    screen.blit(overlay, (0, 0))
-    
-    #Checklist: Título GAME OVER
-    titulo = font_titulo.render("GAME OVER", True, color_rojo)
-    titulo_x = SCREEN_WIDTH // 2 - titulo.get_width() // 2
-    screen.blit(titulo, (titulo_x, 80))
+    screen.blit(imagen_fondo_final, (0, 0))
     
     #Checklist: Puntuación final ficticio - falta implementar
     puntuacion_texto = font_subtitulo.render(f"Puntuación Final: {puntuacion}", True, color_amarillo)
@@ -141,13 +128,13 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
     
     # Mensaje motivacional de fin del juego
     mensajes = [
-        "¡Los invasores han ganado esta vez!",
-        "¡Pero la Tierra aún tiene esperanza!",
+        "¡Los invasores han ganado esta vez! " " ¡Pero la Tierra aún tiene esperanza!"
+        ,
         "¿Intentarás defender el planeta otra vez?"
     ]
     
     for i, mensaje in enumerate(mensajes):
-        texto = font_small.render(mensaje, True, color_blanco)
+        texto = font_small.render(mensaje, True, color_gris)
         x = SCREEN_WIDTH // 2 - texto.get_width() // 2
         screen.blit(texto, (x, 250 + i * 30))
     
@@ -178,9 +165,9 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
     instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
     screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30))
 
-def pantalla_game_over(screen, clock, imagen_fondo, puntuacion=0):
+def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
     """Pantalla de fin del juego"""
-    opciones = ["JUGAR DE NUEVO", "MENÚ PRINCIPAL", "SALIR"]
+    opciones = ["REINTENTAR", "MENÚ PRINCIPAL", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
 
@@ -201,7 +188,7 @@ def pantalla_game_over(screen, clock, imagen_fondo, puntuacion=0):
                     opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
                 elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                     detener_musica()  # Detener música al salir del menu findejuego
-                    if opciones[opcion_seleccionada] == "JUGAR DE NUEVO":
+                    if opciones[opcion_seleccionada] == "REINTENTAR":
                         return "JUGAR"
                     elif opciones[opcion_seleccionada] == "MENÚ PRINCIPAL":
                         return "MENU"
@@ -209,10 +196,10 @@ def pantalla_game_over(screen, clock, imagen_fondo, puntuacion=0):
                         return "SALIR"
         
         contador_parpadeo += 1
-        dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo, puntuacion)
+        dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion)
         
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(FPS)
  
 
 

@@ -11,9 +11,12 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fly Cats")
     clock = pygame.time.Clock()
+    icono = pygame.image.load(RUTA_ICONO_JUEGO)
+    pygame.display.set_icon(icono)
     
     #Checklist: Cargar imagen de fondo del juego - falta modificar
-    imagen_fondo = cargar_imagen_fondo("assets/images/portada.png")
+    imagen_fondo = cargar_imagen_fondo(RUTA_IMAGEN_FONDO_MENU_PRINCIPAL)
+    imagen_fondo_final = cargar_imagen_fondo(RUTA_IMAGEN_FIN_DEL_JUEGO)
     
     estado_actual = "MENU"
     puntuacion_actual = 0
@@ -45,7 +48,7 @@ def main():
                 break
                 
         elif estado_actual == "GAME_OVER":
-            resultado = pantalla_game_over(screen, clock, imagen_fondo, puntuacion_actual)
+            resultado = pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion_actual)
             
             if resultado == "JUGAR":
                 estado_actual = "JUEGO"
