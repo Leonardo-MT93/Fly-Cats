@@ -2,7 +2,7 @@
 
 import pygame
 from config import *
-from utils import  cargar_musica, reproducir_musica, detener_musica
+from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
@@ -45,14 +45,15 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
 
 def mostrar_menu_principal(screen, clock, imagen_fondo):
     """Pantalla del menú principal"""
-    opciones = ["JUGAR", "PUNTUACIONES", "OPCIONES", "SALIR"]
+    opciones = ["JUGAR", "PUNTUACIONES", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
 
     # Reproducir música del menú
     cargar_musica("assets/sounds/music/menu_music.ogg")
     reproducir_musica(volumen=0.5)
-    
+    #checklist modificar while true
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -65,8 +66,16 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
                 elif event.key == pygame.K_DOWN:
                     opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
                 elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
-                    detener_musica()  # Detener música al salir del menú
-                    return opciones[opcion_seleccionada]
+                    #Aca se agrega el modal de puntuaciones
+                    if opciones[opcion_seleccionada] == "PUNTUACIONES":
+                        # Mostrar modal sin detener música de pantalla principl
+                        resultado = mostrar_modal_puntuaciones(screen, clock, imagen_fondo)
+                        if resultado == "SALIR":
+                            detener_musica()
+                            return "SALIR"
+                    else:
+                        detener_musica()  # Detiene la música al salir del menú
+                        return opciones[opcion_seleccionada]
         
         contador_parpadeo += 1
         dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo)
@@ -79,6 +88,8 @@ def pantalla_juego(screen, clock):
     font_small = pygame.font.Font(None, 32)
     color_verde = COLOR_VERDE
     
+    #checklist modificar while true
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -118,7 +129,7 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
     color_verde = COLOR_VERDE
     color_gris = COLOR_GRIS
     
-    # Dibujar fondo (igual que el menú principal)
+    # Dibuja fondo (igual que el menú principal)
     screen.blit(imagen_fondo_final, (0, 0))
     
     #Checklist: Puntuación final ficticio - falta implementar
@@ -167,14 +178,15 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
 
 def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
     """Pantalla de fin del juego"""
-    opciones = ["REINTENTAR", "MENÚ PRINCIPAL", "SALIR"]
+    opciones = ["REINTENTAR", "PUNTUACIONES", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
 
     # Reproducir música de game over
     cargar_musica("assets/sounds/music/game_over_music.ogg")
     reproducir_musica(volumen=0.6)
-    
+    #checklist modificar while true
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -187,13 +199,20 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
                 elif event.key == pygame.K_DOWN:
                     opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
                 elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
-                    detener_musica()  # Detener música al salir del menu findejuego
-                    if opciones[opcion_seleccionada] == "REINTENTAR":
-                        return "JUGAR"
-                    elif opciones[opcion_seleccionada] == "MENÚ PRINCIPAL":
-                        return "MENU"
-                    elif opciones[opcion_seleccionada] == "SALIR":
-                        return "SALIR"
+                    #AAca agregamos el modal que lee los puntajes del csv
+                    if opciones[opcion_seleccionada] == "PUNTUACIONES":
+                        # Muestra el modal sin detener música de la pantalla gameover
+                        resultado = mostrar_modal_puntuaciones(screen, clock, imagen_fondo_final)
+                        if resultado == "SALIR":
+                            detener_musica()
+                            return "SALIR"
+                        
+                    else:
+                        detener_musica()  # Detener música al salir del menu findejuego
+                        if opciones[opcion_seleccionada] == "REINTENTAR":
+                            return "JUGAR"
+                        elif opciones[opcion_seleccionada] == "SALIR":
+                            return "SALIR"
         
         contador_parpadeo += 1
         dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion)

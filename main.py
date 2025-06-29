@@ -2,7 +2,7 @@ import pygame
 import sys
 import random
 from config import *
-from utils import cargar_imagen_fondo
+from utils import cargar_imagen_fondo, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
 from game.game_manager import mostrar_menu_principal, pantalla_juego, pantalla_game_over
 
 def main():
@@ -21,6 +21,7 @@ def main():
     estado_actual = "MENU"
     puntuacion_actual = 0
     
+    #checklist modificar while true
     while True:
         if estado_actual == "MENU":
             resultado = mostrar_menu_principal(screen, clock, imagen_fondo)
@@ -28,10 +29,6 @@ def main():
             if resultado == "JUGAR":
                 estado_actual = "JUEGO"
                 puntuacion_actual = 0
-            elif resultado == "PUNTUACIONES":
-                print("Mostrar puntuaciones...")  #Checklist: Falta terminar..
-            elif resultado == "OPCIONES":
-                print("Mostrar opciones...")  #Checklist: Falta terminar..
             elif resultado == "SALIR":
                 break
                 
@@ -41,8 +38,20 @@ def main():
             if resultado == "MENU":
                 estado_actual = "MENU"
             elif resultado == "GAME_OVER":
-                #Checklist: Puntuación implementar.. 
                 puntuacion_actual = random.randint(1000, 9999)
+                
+                # VERIFICAR SI ES NUEVO RÉCORD Y AGREGAR AL CSV
+                if es_nuevo_record(puntuacion_actual):
+                    # Obtener nombre del jugador
+                    nombre_jugador = obtener_nombre_jugador(screen, clock, imagen_fondo)
+                    # Agregar al CSV
+                    agregar_puntuacion_csv(nombre_jugador, puntuacion_actual)
+                    print(f"¡NUEVO RÉCORD! {nombre_jugador}: {puntuacion_actual}")
+                else:
+                    # También agregar puntuaciones normales al historial
+                    agregar_puntuacion_csv("PLAYER", puntuacion_actual)
+                    print(f"Puntuación agregada: {puntuacion_actual}")
+                
                 estado_actual = "GAME_OVER"
             elif resultado == "SALIR":
                 break
