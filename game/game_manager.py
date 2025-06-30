@@ -52,9 +52,9 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
     # Reproducir música del menú
     cargar_musica("assets/sounds/music/menu_music.ogg")
     reproducir_musica(volumen=0.5)
-    #checklist modificar while true
+    juego_activo = 1
 
-    while True:
+    while juego_activo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 detener_musica()
@@ -83,14 +83,15 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
         pygame.display.flip()
         clock.tick(FPS)
 
-def pantalla_juego(screen, clock):
+def pantalla_juego(screen, clock, imagen_pantalla_juego):
     """Pantalla de juego - completamente negra para completar por Vish/Agos"""
     font_small = pygame.font.Font(None, 32)
     color_verde = COLOR_VERDE
-    
-    #checklist modificar while true
+    #carga la imagen de la pantalla de juego con imagen_pantalla_juego
 
-    while True:
+    juego_activo = 1
+
+    while juego_activo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "SALIR"
@@ -101,7 +102,7 @@ def pantalla_juego(screen, clock):
                     return "GAME_OVER"  # Simular fin del juego con tecla 5
         
         # Pantalla completamente negra
-        screen.fill((0, 0, 0))
+        screen.blit(imagen_pantalla_juego, (0, 0))
         
         # Texto de instrucciones en verde para el usuario
         instrucciones = [
@@ -185,9 +186,9 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
     # Reproducir música de game over
     cargar_musica("assets/sounds/music/game_over_music.ogg")
     reproducir_musica(volumen=0.6)
-    #checklist modificar while true
 
-    while True:
+    juego_activo = 1
+    while juego_activo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 detener_musica()

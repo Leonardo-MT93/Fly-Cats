@@ -87,9 +87,8 @@ def obtener_nombre_jugador(screen, clock, imagen_fondo):
     imagen_record = pygame.image.load("assets/images/record.png")
     imagen_record = pygame.transform.scale(imagen_record, (SCREEN_WIDTH, SCREEN_HEIGHT))
     
-        #checklist modificar while true
-
-    while True:
+    juego_activo = 1
+    while juego_activo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "JUGADOR"  # Nombre por defecto
@@ -177,9 +176,9 @@ def mostrar_modal_puntuaciones(screen, clock, imagen_fondo):
     # Aca secargan las puntuaciones
     puntuaciones = leer_puntuaciones_csv()
     
-    #checklist modificar while true
+    juego_activo = 1
 
-    while True:
+    while juego_activo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "SALIR"
