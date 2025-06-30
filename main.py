@@ -21,8 +21,8 @@ def main():
     estado_actual = "MENU"
     puntuacion_actual = 0
     
-    #checklist modificar while true
-    while True:
+    juego_activo = 1
+    while juego_activo:
         if estado_actual == "MENU":
             resultado = mostrar_menu_principal(screen, clock, imagen_fondo)
             
@@ -30,7 +30,7 @@ def main():
                 estado_actual = "JUEGO"
                 puntuacion_actual = 0
             elif resultado == "SALIR":
-                break
+                juego_activo = 0
                 
         elif estado_actual == "JUEGO":
             resultado = pantalla_juego(screen, clock)
@@ -49,12 +49,13 @@ def main():
                     print(f"¡NUEVO RÉCORD! {nombre_jugador}: {puntuacion_actual}")
                 else:
                     # También agregar puntuaciones normales al historial
-                    agregar_puntuacion_csv("PLAYER", puntuacion_actual)
+                    agregar_puntuacion_csv("JUGADOR", puntuacion_actual)
                     print(f"Puntuación agregada: {puntuacion_actual}")
                 
                 estado_actual = "GAME_OVER"
             elif resultado == "SALIR":
-                break
+                juego_activo = 0
+
                 
         elif estado_actual == "GAME_OVER":
             resultado = pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion_actual)
@@ -65,7 +66,7 @@ def main():
             elif resultado == "MENU":
                 estado_actual = "MENU"
             elif resultado == "SALIR":
-                break
+                juego_activo = 0
     
     pygame.quit()
     sys.exit()
