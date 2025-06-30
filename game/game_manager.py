@@ -83,11 +83,12 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
         pygame.display.flip()
         clock.tick(FPS)
 
-def pantalla_juego(screen, clock):
+def pantalla_juego(screen, clock, imagen_pantalla_juego):
     """Pantalla de juego - completamente negra para completar por Vish/Agos"""
     font_small = pygame.font.Font(None, 32)
     color_verde = COLOR_VERDE
-    
+    #carga la imagen de la pantalla de juego con imagen_pantalla_juego
+
     juego_activo = 1
 
     while juego_activo:
@@ -101,7 +102,7 @@ def pantalla_juego(screen, clock):
                     return "GAME_OVER"  # Simular fin del juego con tecla 5
         
         # Pantalla completamente negra
-        screen.fill((0, 0, 0))
+        screen.blit(imagen_pantalla_juego, (0, 0))
         
         # Texto de instrucciones en verde para el usuario
         instrucciones = [

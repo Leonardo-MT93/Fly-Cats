@@ -17,7 +17,7 @@ def main():
     #Checklist: Cargar imagen de fondo del juego - falta modificar
     imagen_fondo = cargar_imagen_fondo(RUTA_IMAGEN_FONDO_MENU_PRINCIPAL)
     imagen_fondo_final = cargar_imagen_fondo(RUTA_IMAGEN_FIN_DEL_JUEGO)
-    
+    imagen_pantalla_juego = cargar_imagen_fondo(RUTA_IMAGEN_PANTALLA_JUEGO)
     estado_actual = "MENU"
     puntuacion_actual = 0
     
@@ -33,7 +33,7 @@ def main():
                 juego_activo = 0
                 
         elif estado_actual == "JUEGO":
-            resultado = pantalla_juego(screen, clock)
+            resultado = pantalla_juego(screen, clock, imagen_pantalla_juego)
             
             if resultado == "MENU":
                 estado_actual = "MENU"
