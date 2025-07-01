@@ -51,7 +51,7 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
 
     # Reproducir música del menú
     cargar_musica("assets/sounds/music/menu_music.ogg")
-    reproducir_musica(volumen=0.5)
+    reproducir_musica(volumen=0.1)
     juego_activo = 1
 
     while juego_activo:
@@ -185,7 +185,7 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
 
     # Reproducir música de game over
     cargar_musica("assets/sounds/music/game_over_music.ogg")
-    reproducir_musica(volumen=0.6)
+    reproducir_musica(volumen=0.1)
 
     juego_activo = 1
     while juego_activo:

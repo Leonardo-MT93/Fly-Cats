@@ -16,7 +16,7 @@ def cargar_musica(ruta_musica):
     """Carga una canción"""
     pygame.mixer.music.load(ruta_musica)
 
-def reproducir_musica(volumen=0.7, loops=-1):
+def reproducir_musica(volumen=0.1, loops=-1):
     """Reproduce la música cargada"""
     pygame.mixer.music.set_volume(volumen)
     pygame.mixer.music.play(loops)  # loops=-1 significa repetir infinitamente
@@ -31,8 +31,9 @@ def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
     puntuaciones = []
     archivo_csv = open(archivo, 'r', encoding='utf-8')
     lector = csv.reader(archivo_csv)
+
     
-    # Saltar encabezado si existe
+    # Salta la linea del encabezado si existe y si no hay mas lineas, no genera un error con None
     next(lector, None)
     
     for fila in lector:
@@ -43,9 +44,18 @@ def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
     
     archivo_csv.close()
     
-    # Ordenanamieto de mayor a mneor
-    puntuaciones.sort(key=lambda x: x[1], reverse=True)
-    
+    # Ordenanamieto de mayor a mneor utilizando bubble sort
+
+
+    print("Ordenando puntuaciones...")
+    n = len(puntuaciones)
+
+    for i in range(n):
+        for j in range(n - 1 - i):
+            if puntuaciones[j][1] < puntuaciones[j + 1][1]:
+                puntuaciones[j], puntuaciones[j + 1] = puntuaciones[j + 1], puntuaciones[j]
+
+    print("Puntuaciones ordenadas:", puntuaciones)
     return puntuaciones[:10]  # solamente muestra el top10
 
 def agregar_puntuacion_csv(nombre, puntuacion, archivo="assets/puntuaciones.csv"):
