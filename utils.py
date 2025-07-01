@@ -29,24 +29,22 @@ def detener_musica():
 def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
     """Lee las puntuaciones desde un archivo CSV"""
     puntuaciones = []
-    archivo_csv = open(archivo, 'r', encoding='utf-8')
+    archivo_csv = open(archivo, 'r', encoding='utf-8') #aca abro el archivo en modo lectura 'r' con la codificcion UTF8
     lector = csv.reader(archivo_csv)
 
     
     # Salta la linea del encabezado si existe y si no hay mas lineas, no genera un error con None
     next(lector, None)
     
-    for fila in lector:
+    for fila in lector: #recorremos sobre cada linea del archivo
         if len(fila) >= 2:  # Asegurar que hay al menos nombre y puntuación
             nombre = fila[0]
             puntuacion = int(fila[1])
-            puntuaciones.append((nombre, puntuacion))
+            puntuaciones.append((nombre, puntuacion)) #se agrega la tupla a la lista puntuaciones
     
     archivo_csv.close()
     
     # Ordenanamieto de mayor a mneor utilizando bubble sort
-
-
     print("Ordenando puntuaciones...")
     n = len(puntuaciones)
 
