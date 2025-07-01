@@ -29,3 +29,7 @@ wheels/
 # OS
 .DS_Store
 Thumbs.db
+
+#ignorar el archivo csv
+assets/puntuaciones.csv
+*.csv
