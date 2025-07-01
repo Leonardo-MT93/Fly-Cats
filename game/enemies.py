@@ -16,7 +16,7 @@ enemigo_x = 100
 enemigo_y = 100
 velocidad_x = 3
 
-def mover_enemigo(enemigo_x, 
+def mover_enemigo(enemigo_x, enemigo_y, velocidad_x):
     """
     El primer enemigo se mueve horizontalmente
     """
