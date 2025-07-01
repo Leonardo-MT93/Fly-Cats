@@ -91,7 +91,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     color_verde = COLOR_VERDE
     #carga la imagen de la pantalla de juego con imagen_pantalla_juego
 
-    jugador = crear_jugador(300, 500)
+    jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
 
@@ -108,7 +108,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
 
         # Movimiento del jugador
         keys = pygame.key.get_pressed()
-        mover_jugador(jugador, keys)
+        mover_jugador(jugador, keys, screen.get_width(), screen.get_height())
 
         # Disparo de balas
         if keys[pygame.K_SPACE]:

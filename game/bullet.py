@@ -4,6 +4,7 @@ import pygame
 def crear_bala(x, y):
     bala = {}
     bala['image'] = pygame.image.load("assets/images/bola-estambre.png").convert_alpha()
+    bala['image'] = pygame.transform.scale(bala['image'], (25, 25))
     bala['rect'] = bala['image'].get_rect(center=(x, y))
     bala['speed'] = -8
     return bala
