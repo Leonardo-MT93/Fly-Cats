@@ -58,10 +58,10 @@ git push origin feature/enemies
 - `game/bullet.py` ← Clase de las bolas de lana
 - `assets/player/` ← Sprites del gato
 - `assets/bullets/` ← Sprites de bolas de lana
+- `game/game_manager.py` ← Solamente la funcion pantalla_juego (**Importante**)
 
 #### ❌ ARCHIVOS QUE NO DEBES TOCAR:
 - `main.py`
-- `game/game_manager.py`
 - `game/enemies.py`
 - `game/powerups.py`
 
@@ -71,10 +71,11 @@ git push origin feature/enemies
 - `game/powerups.py` ← Clase de power-ups
 - `assets/enemies/` ← Sprites de enemigos
 - `assets/powerups/` ← Sprites de power-ups
+- `game/game_manager.py` ← Solamente la funcion pantalla_juego (**Importante**)
+
 
 #### ❌ ARCHIVOS QUE NO DEBES TOCAR:
 - `main.py`
-- `game/game_manager.py`
 - `game/player.py`
 - `game/bullet.py`
 
@@ -300,12 +301,6 @@ git stash pop
 
 ### 📝 FORMATO DE COMMITS (OPCIONAL PERO RECOMENDADO):
 
-#### 🎨 CON EMOJIS (Para darle personalidad):
-```bash
-🦁 León:     "🦁 Core: descripción"
-🦋 Agostina: "🦋 Player: descripción"  
-🐅 Vish:     "🐅 Enemies: descripción"
-```
 
 #### 📝 SIN EMOJIS (También válido):
 ```bash
@@ -314,15 +309,6 @@ Agostina: "Player: descripción"
 Vish:     "Enemies: descripción"
 ```
 
-#### ⌨️ CÓMO ESCRIBIR TU EMOJI ANIMAL:
-
-**🦋 AGOSTINA (Mariposa):**
-- **Windows:** Win + . (punto) → buscar "butterfly"  
-- **Mac:** Cmd + Control + Espacio → buscar "mariposa"
-
-**🐅 VISH (Tigre):**
-- **Windows:** Win + . (punto) → buscar "tiger"
-- **Mac:** Cmd + Control + Espacio → buscar "tigre"  
 
 ### 🆘 CUANDO PEDIR AYUDA:
 - Error que no puedes resolver en 30 min
@@ -367,12 +353,12 @@ python main.py
 ### 📅 SEMANA 1:
 - 🦋 Agostina: Gato que se mueve y dispara básico
 - 🐅 Vish: Enemigo simple que cae
-- 🦁 León: Integración básica + colisiones
+- 🦁 León: Integración básica + Puntuacion + Game Over
 
 ### 📅 SEMANA 2:
 - 🦋 Agostina: Pulir movimiento + animaciones
 - 🐅 Vish: Múltiples enemigos + power-up básico
-- 🦁 León: Game over + reinicio + puntuación
+- 🦁 León: Reinicio + Colisiones
 
 ---
 
@@ -390,8 +376,8 @@ python main.py
 ## 📞 CONTACTOS DE EMERGENCIA
 
 - **🦁 León:** [leonardotolaba.20@gmail.com]
-- **🦋 Agostina:** [agostina.email@ejemplo.com]  
-- **🐅 Vish:** [vish.email@ejemplo.com]
+- **🦋 Agostina:** [Falta completar]  
+- **🐅 Vish:** [Falta completar]
 - **📱 Grupo:** La Triada Salvaje - WhatsApp/Discord
 
 ---

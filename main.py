@@ -1,44 +1,72 @@
-# Archivo de configuraciones a cargo de León! 
-
 import pygame
 import sys
+import random
+from config import *
+from utils import cargar_imagen_fondo, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
+from game.game_manager import mostrar_menu_principal, pantalla_juego, pantalla_game_over
 
 def main():
+    """Función principal que maneja todas las pantallas"""
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Space Invaders - Testeado con un puntito blanco xD")
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Fly Cats")
     clock = pygame.time.Clock()
+    icono = pygame.image.load(RUTA_ICONO_JUEGO)
+    pygame.display.set_icon(icono)
     
-    # Variables del jugador (punto creado)
-    player_x = 400  # Posicion central del punto
-    player_y = 300
-    player_size = 38  # Tamaño del punto que se mueve con las teclas
-    player_speed = 5
+    #Checklist: Cargar imagen de fondo del juego - falta modificar
+    imagen_fondo = cargar_imagen_fondo(RUTA_IMAGEN_FONDO_MENU_PRINCIPAL)
+    imagen_fondo_final = cargar_imagen_fondo(RUTA_IMAGEN_FIN_DEL_JUEGO)
+    imagen_pantalla_juego = cargar_imagen_fondo(RUTA_IMAGEN_PANTALLA_JUEGO)
+    estado_actual = "MENU"
+    puntuacion_actual = 0
     
-    running = True
-    while running:
-        # Evento para poder cerrar el juego si tocas la CRUZ
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        
-        # Comandos direccionales para manejar el punto ya creado
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            player_x -= player_speed
-        if keys[pygame.K_RIGHT]:
-            player_x += player_speed
-        if keys[pygame.K_UP]:
-            player_y -= player_speed
-        if keys[pygame.K_DOWN]:
-            player_y += player_speed
-        
-        
-        screen.fill((128, 0, 128))  # Color de fondo de la pantalla creada
-        pygame.draw.circle(screen, (255, 255, 255), (player_x + player_size//2, player_y + player_size//2), player_size//2)  # Color de l punto que se maneja con los direccionales. Todo en prueba
-        
-        pygame.display.flip()
-        clock.tick(60)
+    juego_activo = 1
+    while juego_activo:
+        if estado_actual == "MENU":
+            resultado = mostrar_menu_principal(screen, clock, imagen_fondo)
+            
+            if resultado == "JUGAR":
+                estado_actual = "JUEGO"
+                puntuacion_actual = 0
+            elif resultado == "SALIR":
+                juego_activo = 0
+                
+        elif estado_actual == "JUEGO":
+            resultado = pantalla_juego(screen, clock, imagen_pantalla_juego)
+            
+            if resultado == "MENU":
+                estado_actual = "MENU"
+            elif resultado == "GAME_OVER":
+                puntuacion_actual = random.randint(1000, 9999)
+                
+                # VERIFICAR SI ES NUEVO RÉCORD Y AGREGAR AL CSV
+                if es_nuevo_record(puntuacion_actual):
+                    # Obtener nombre del jugador
+                    nombre_jugador = obtener_nombre_jugador(screen, clock, imagen_fondo)
+                    # Agregar al CSV
+                    agregar_puntuacion_csv(nombre_jugador, puntuacion_actual)
+                    print(f"¡NUEVO RÉCORD! {nombre_jugador}: {puntuacion_actual}")
+                else:
+                    # También agregar puntuaciones normales al historial
+                    agregar_puntuacion_csv("JUGADOR", puntuacion_actual)
+                    print(f"Puntuación agregada: {puntuacion_actual}")
+                
+                estado_actual = "GAME_OVER"
+            elif resultado == "SALIR":
+                juego_activo = 0
+
+                
+        elif estado_actual == "GAME_OVER":
+            resultado = pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion_actual)
+            
+            if resultado == "JUGAR":
+                estado_actual = "JUEGO"
+                puntuacion_actual = 0
+            elif resultado == "MENU":
+                estado_actual = "MENU"
+            elif resultado == "SALIR":
+                juego_activo = 0
     
     pygame.quit()
     sys.exit()
