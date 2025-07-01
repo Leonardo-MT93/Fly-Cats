@@ -2,6 +2,8 @@
 
 import pygame
 from config import *
+from game.player import crear_jugador, mover_jugador, dibujar_jugador
+from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
@@ -89,33 +91,54 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     color_verde = COLOR_VERDE
     #carga la imagen de la pantalla de juego con imagen_pantalla_juego
 
-    juego_activo = 1
+    jugador = crear_jugador(300, 500)
+    balas = []
+    disparar = False
 
+    juego_activo = 1
     while juego_activo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "SALIR"
-            if event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return "MENU"
                 elif event.key == pygame.K_5:
-                    return "GAME_OVER"  # Simular fin del juego con tecla 5
-        
-        # Pantalla completamente negra
+                    return "GAME_OVER"
+
+        # Movimiento del jugador
+        keys = pygame.key.get_pressed()
+        mover_jugador(jugador, keys)
+
+        # Disparo de balas
+        if keys[pygame.K_SPACE]:
+            if not disparar:
+                bala = crear_bala(jugador['rect'].centerx, jugador['rect'].top)
+                balas.append(bala)
+                disparar = True
+        else:
+            disparar = False
+
+        # Movimiento y limpieza de balas
+        for bala in balas[:]:
+            mover_bala(bala)
+            if bala_fuera_de_pantalla(bala):
+                balas.remove(bala)
+
+        # Fondo de juego
         screen.blit(imagen_pantalla_juego, (0, 0))
-        
-        # Texto de instrucciones en verde para el usuario
-        instrucciones = [
-            "ESC - Volver al menú",
-            "5 - Simular fin del juego"
-        ]
-        
+
+        # Dibujar jugador y balas
+        dibujar_jugador(screen, jugador)
+        for bala in balas:
+            dibujar_bala(screen, bala)
+
+        # Instrucciones en pantalla
+        instrucciones = ["ESC - Volver al menú", "5 - Simular fin del juego"]
         for i, instruccion in enumerate(instrucciones):
-            texto = font_small.render(instruccion, True, color_verde)
-            x = 20  # Margen izquierdo
-            y = 20 + i * 35  # Espaciado vertical
-            screen.blit(texto, (x, y))
-        
+            texto = font_small.render(instruccion, True, COLOR_VERDE)
+            screen.blit(texto, (20, 20 + i * 35))
+
         pygame.display.flip()
         clock.tick(FPS)
 
