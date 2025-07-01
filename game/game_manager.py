@@ -3,7 +3,7 @@
 import pygame
 from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
-from enemies import mover_enemigo
+# from enemies import mover_enemigo
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
@@ -102,7 +102,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
                 elif event.key == pygame.K_5:
                     return "GAME_OVER"  # Simular fin del juego con tecla 5
         
-        mover_enemigo()
+        # mover_enemigo()
 
         # Pantalla completamente negra
         screen.blit(imagen_pantalla_juego, (0, 0))
