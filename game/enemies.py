@@ -4,29 +4,29 @@
 
 from game.game_manager import pantalla_juego
 import pygame
-import random
 import config
 
-pygame.init()
-pygame.image.load()
-pygame.time.Clock().tick(30)
+ancho = config.SCREEN_WIDTH
+alto = config.SCREEN_HEIGHT
 
-imagen_enemigo1 = pygame.image.load("assets/images/enemies/PerroRobot1.png")
+imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perrorobotvolando.png")
+enemigo_rect = imagen_enemigo1.get_rect()
 
-velocidad = 3
+enemigo_x = 100
+enemigo_y = 100
+velocidad_x = 3
 
-vuela_enemigo = True
-while vuela_enemigo:
-    for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
-            vuela_enemigo = False
-    pygame.draw.rect(imagen_enemigo1)
-    pantalla_juego.blit("assets/images/FondoJuego.png")
-    imagen_enemigo1.x += velocidad 
+def mover_enemigo(enemigo_x, 
+    """
+    El primer enemigo se mueve horizontalmente
+    """
+    enemigo_x = 100
+    enemigo_y = 100
+    velocidad_x = 3
+    enemigo_x += velocidad_x
 
-    pygame.display.flip()        
+    # Rebote en los bordes 
+    if enemigo_x > ancho - enemigo_rect.width or enemigo_x < 0:
+        velocidad_x *= -1
 
-
-      
-
-pygame.quit()
+    return enemigo_x
