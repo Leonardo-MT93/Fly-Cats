@@ -2,31 +2,30 @@
 
 # Enemigos: Perro robot
 
-from game.game_manager import pantalla_juego
 import pygame
 import config
+import random
 
-ancho = config.SCREEN_WIDTH
 alto = config.SCREEN_HEIGHT
+imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perro_robot_cayendo.png")
+imagen_enemigo1_escalada = pygame.transform.scale(imagen_enemigo1, (85, 85))
+enemigo_rect = imagen_enemigo1_escalada.get_rect()
 
-imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perrorobotvolando.png")
-enemigo_rect = imagen_enemigo1.get_rect()
 
-enemigo_x = 100
-enemigo_y = 100
-velocidad_x = 3
-
-def mover_enemigo(enemigo_x, enemigo_y, velocidad_x):
+def crear_enemigo():
     """
-    El primer enemigo se mueve horizontalmente
+    Crea enemigos de forma aleatoria, y los posiciona siempre
+    dentro de la pantalla
     """
-    enemigo_x = 100
-    enemigo_y = 100
-    velocidad_x = 3
-    enemigo_x += velocidad_x
+    enemigo_creado = {
+        "x": random.randint(0, config.SCREEN_WIDTH - 85),  # 85 es el ancho de la imagen
+        "y": random.randint(-150, -50),  # Para que aparezcan en momentos distintos
+        "velocidad_y": random.randint(3, 6)
+    }
+    return enemigo_creado
 
-    # Rebote en los bordes 
-    if enemigo_x > ancho - enemigo_rect.width or enemigo_x < 0:
-        velocidad_x *= -1
-
-    return enemigo_x
+def mover_enemigo(enemigo: dict):
+    """
+    Mueve al enemigo de acuerdo a su velocidad
+    """
+    enemigo["y"] += enemigo["velocidad_y"]

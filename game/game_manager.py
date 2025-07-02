@@ -5,7 +5,8 @@ from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
-# from enemies import mover_enemigo
+from game.enemies import crear_enemigo, mover_enemigo, imagen_enemigo1_escalada
+from game.powerups import crear_atun, crear_milk, caer_atun, caer_milk, atun_escalada, milk_escalada
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
@@ -198,6 +199,19 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
+    enemigos = []
+    atunes = []
+    milks = []
+
+    #
+    for i in range(20):  
+        enemigos.append(crear_enemigo())
+
+    for i in range(5):  
+        atunes.append(crear_atun())
+
+    for i in range(5):  
+        milks.append(crear_milk())    
 
     juego_activo = 1
     while juego_activo:
@@ -231,6 +245,21 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
 
         # Fondo de juego
         screen.blit(imagen_pantalla_juego, (0, 0))
+
+        #Caida enemigo
+        for enemigo in enemigos:
+            mover_enemigo(enemigo)
+            screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
+
+        #Caida lata de atun
+        for atun in atunes:
+            caer_atun(atun)
+            screen.blit(atun_escalada, (atun["x"], atun["y"]))
+
+        #Caida botella de leche
+        for milk in milks:
+            caer_milk(milk)
+            screen.blit(milk_escalada, (milk["x"], milk["y"]))
 
         # Dibujar jugador y balas
         dibujar_jugador(screen, jugador)
