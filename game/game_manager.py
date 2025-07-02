@@ -3,6 +3,8 @@
 import pygame
 from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
+from game.player import crear_jugador, mover_jugador, dibujar_jugador
+from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
 # from enemies import mover_enemigo
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
@@ -84,43 +86,6 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
         pygame.display.flip()
         clock.tick(FPS)
 
-def pantalla_juego(screen, clock, imagen_pantalla_juego):
-    """Pantalla de juego - completamente negra para completar por Vish/Agos"""
-    font_small = pygame.font.Font(None, 32)
-    color_verde = COLOR_VERDE
-    #carga la imagen de la pantalla de juego con imagen_pantalla_juego
-
-    juego_activo = 1
-
-    while juego_activo:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return "SALIR"
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    return "MENU"
-                elif event.key == pygame.K_5:
-                    return "GAME_OVER"  # Simular fin del juego con tecla 5
-        
-        # mover_enemigo()
-
-        # Pantalla completamente negra
-        screen.blit(imagen_pantalla_juego, (0, 0))
-        
-        # Texto de instrucciones en verde para el usuario
-        instrucciones = [
-            "ESC - Volver al menú",
-            "5 - Simular fin del juego"
-        ]
-        
-        for i, instruccion in enumerate(instrucciones):
-            texto = font_small.render(instruccion, True, color_verde)
-            x = 20  # Margen izquierdo
-            y = 20 + i * 35  # Espaciado vertical
-            screen.blit(texto, (x, y))
-        
-        pygame.display.flip()
-        clock.tick(FPS)
 
 def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion=0):
     """Dibuja la pantalla de game over"""
@@ -224,5 +189,60 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
         pygame.display.flip()
         clock.tick(FPS)
  
+def pantalla_juego(screen, clock, imagen_pantalla_juego):
+    """Pantalla de juego - completamente negra para completar por Vish/Agos"""
+    font_small = pygame.font.Font(None, 32)
+    color_verde = COLOR_VERDE
+    #carga la imagen de la pantalla de juego con imagen_pantalla_juego
 
+    jugador = crear_jugador(screen.get_width(), screen.get_height())
+    balas = []
+    disparar = False
+
+    juego_activo = 1
+    while juego_activo:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "SALIR"
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return "MENU"
+                elif event.key == pygame.K_5:
+                    return "GAME_OVER"
+
+        # Movimiento del jugador
+        keys = pygame.key.get_pressed()
+        mover_jugador(jugador, keys, screen.get_width(), screen.get_height())
+
+        # Disparo de balas
+        if keys[pygame.K_SPACE]:
+            if not disparar:
+                bala = crear_bala(jugador['rect'].centerx, jugador['rect'].top)
+                balas.append(bala)
+                disparar = True
+        else:
+            disparar = False
+
+        # Movimiento y limpieza de balas
+        for bala in balas[:]:
+            mover_bala(bala)
+            if bala_fuera_de_pantalla(bala):
+                balas.remove(bala)
+
+        # Fondo de juego
+        screen.blit(imagen_pantalla_juego, (0, 0))
+
+        # Dibujar jugador y balas
+        dibujar_jugador(screen, jugador)
+        for bala in balas:
+            dibujar_bala(screen, bala)
+
+        # Instrucciones en pantalla
+        instrucciones = ["ESC - Volver al menú", "5 - Simular fin del juego"]
+        for i, instruccion in enumerate(instrucciones):
+            texto = font_small.render(instruccion, True, COLOR_VERDE)
+            screen.blit(texto, (20, 20 + i * 35))
+
+        pygame.display.flip()
+        clock.tick(FPS)
 
