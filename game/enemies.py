@@ -26,13 +26,7 @@ def crear_enemigo() -> dict :
     }
     return enemigo_creado
 
-def mover_enemigo(enemigo: dict):
-    """
-    Mueve al enemigo de acuerdo a su velocidad
-    """
-    enemigo["y"] += enemigo["velocidad_y"]
-
-def crear_objetos (crear_funcion, cantidad):
+def crear_objetos (crear_funcion, cantidad:int) -> list :
     """
     Genera una lista (en este caso la usamos para enemigos y power ups)
     """    
@@ -42,6 +36,9 @@ def crear_objetos (crear_funcion, cantidad):
     return lista
 
 def caer_objeto(objeto: dict):
+    """
+    Se le pasa un diccionario, lo modifica y actualiza, de acuerdo al estado, tiempo y velocidad de aparicion
+    """
     if objeto["tiempo_espera"] > 0:
         objeto["tiempo_espera"] -= 1
     else:

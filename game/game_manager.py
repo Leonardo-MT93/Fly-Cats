@@ -199,15 +199,10 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
-    enemigos = []
-    atunes = []
-    milks = []
 
-    #
+    #Creamos listas de los enemigos y power ups que caeran
     enemigos = crear_objetos(crear_enemigo, 35)
-
     atunes = crear_objetos(crear_atun, 5)
-
     milks = crear_objetos(crear_milk, 3)
 
     juego_activo = 1
@@ -243,19 +238,17 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         # Fondo de juego
         screen.blit(imagen_pantalla_juego, (0, 0))
 
-        #Caida enemigo
+        # Hacemos caer los enemigos y power ups, dibuja solo si están activas en pantalla
         for enemigo in enemigos:
             caer_objeto(enemigo)
             if enemigo["activo"]:
                 screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
 
-        #Caida lata de atun
         for atun in atunes:
             caer_objeto(atun)
             if atun["activo"]:
                 screen.blit(atun_escalada, (atun["x"], atun["y"]))
 
-        #Caida botella de leche
         for milk in milks:
             caer_objeto(milk)
             if milk["activo"]:
