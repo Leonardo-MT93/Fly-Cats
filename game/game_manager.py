@@ -278,7 +278,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     # 
     #carga la imagen de la pantalla de juego con imagen_pantalla_juego
 
-    jugador = crear_jugador(screen.get_width(), screen.get_height())
+    imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
 
@@ -302,21 +302,23 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
 
         # Movimiento del jugador
         keys = pygame.key.get_pressed()
-        mover_jugador(jugador, keys, screen.get_width(), screen.get_height())
+        mover_jugador(rect_jugador, keys, screen.get_width(), screen.get_height(), velocidad_jugador)
+
 
         # Disparo de balas
         if keys[pygame.K_SPACE]:
             if not disparar:
-                bala = crear_bala(jugador['rect'].centerx, jugador['rect'].top)
-                balas.append(bala)
+                imagen_bala, rect_bala, velocidad_bala = crear_bala(rect_jugador.centerx, rect_jugador.top)
+                balas.append((imagen_bala, rect_bala, velocidad_bala))
                 disparar = True
         else:
             disparar = False
 
         # Movimiento y limpieza de balas
         for bala in balas[:]:
-            mover_bala(bala)
-            if bala_fuera_de_pantalla(bala):
+            imagen, rect, velocidad = bala
+            mover_bala(rect, velocidad)
+            if bala_fuera_de_pantalla(rect):
                 balas.remove(bala)
 
         # Fondo de juego
@@ -339,9 +341,10 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
                 screen.blit(milk_escalada, (milk["x"], milk["y"]))            
 
         # Dibujar jugador y balas
-        dibujar_jugador(screen, jugador)
+        dibujar_jugador(screen, imagen_jugador, rect_jugador)
         for bala in balas:
-            dibujar_bala(screen, bala)
+            imagen, rect, _ = bala
+            dibujar_bala(screen, imagen, rect)
 
         # Instrucciones en pantalla
         instrucciones = ["ESC - Volver al menú", "5 - Simular fin del juego"]
