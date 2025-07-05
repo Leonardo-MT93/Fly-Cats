@@ -45,7 +45,7 @@ def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
     archivo_csv.close()
     
     # Ordenanamieto de mayor a mneor utilizando bubble sort
-    print("Ordenando puntuaciones...")
+    # print("Ordenando puntuaciones...")
     n = len(puntuaciones)
 
     for i in range(n):
@@ -53,7 +53,7 @@ def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
             if puntuaciones[j][1] < puntuaciones[j + 1][1]:
                 puntuaciones[j], puntuaciones[j + 1] = puntuaciones[j + 1], puntuaciones[j]
 
-    print("Puntuaciones ordenadas:", puntuaciones)
+    # print("Puntuaciones ordenadas:", puntuaciones)
     return puntuaciones[:10]  # solamente muestra el top10
 
 def agregar_puntuacion_csv(nombre, puntuacion, archivo="assets/puntuaciones.csv"):
@@ -175,6 +175,7 @@ def obtener_nombre_jugador(screen, clock, imagen_fondo):
         clock.tick(60)
 
 def mostrar_modal_puntuaciones(screen, clock, imagen_fondo):
+    
     """Modal de puntuaciones - no detiene la música"""
     font_titulo = pygame.font.Font(None, 56)
     font_puntuacion = pygame.font.Font(None, 36)
@@ -247,6 +248,72 @@ def mostrar_modal_puntuaciones(screen, clock, imagen_fondo):
                     screen.blit(posicion, (modal_x + 30, y_pos))
                     screen.blit(nombre_texto, (modal_x + 70, y_pos))
                     screen.blit(puntuacion_texto, (modal_x + modal_ancho - 120, y_pos))
+        
+        # Instrucción para salir
+        instruccion = font_instruccion.render("ESC - Volver al menu anterior", True, COLOR_VERDE)
+        instr_x = modal_x + (modal_ancho - instruccion.get_width()) // 2
+        screen.blit(instruccion, (instr_x, modal_y + modal_alto - 40))
+        
+        pygame.display.flip()
+        clock.tick(FPS)
+
+def mostrar_modal_creditos(screen, clock, imagen_fondo):
+    """Modal de créditos - no detiene la música"""
+    font_titulo = pygame.font.Font(None, 56)
+    font_instruccion = pygame.font.Font(None, 28)
+    mensaje = "Juego desarrollado por:\nAgos, León y Vish\nUTNFRA 2025"
+        
+        
+    # Aca secargan las puntuaciones
+    # puntuaciones = leer_puntuaciones_csv()
+        
+    juego_activo = 1
+
+    while juego_activo:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "SALIR"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return "VOLVER"  # Volver al menú anterior sin detener música
+        
+        # Dibujar fondo
+        screen.blit(imagen_fondo, (0, 0))
+        
+        # Capa semi-transparente para efecto modal
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+        screen.blit(overlay, (0, 0))
+        
+        # Contenedor del modal
+        modal_ancho = 500
+        modal_alto = 400
+        modal_x = (SCREEN_WIDTH - modal_ancho) // 2
+        modal_y = (SCREEN_HEIGHT - modal_alto) // 2
+        
+        pygame.draw.rect(screen, (20, 20, 20), (modal_x, modal_y, modal_ancho, modal_alto))
+        pygame.draw.rect(screen, COLOR_AMARILLO, (modal_x, modal_y, modal_ancho, modal_alto), 3)
+        
+        # Título
+        titulo = font_titulo.render("CREDITOS", True, COLOR_AMARILLO)
+        titulo_x = modal_x + (modal_ancho - titulo.get_width()) // 2
+        screen.blit(titulo, (titulo_x, modal_y + 20))
+        
+        # Línea separadora
+        pygame.draw.line(screen, COLOR_GRIS, 
+                        (modal_x + 20, modal_y + 70), 
+                        (modal_x + modal_ancho - 20, modal_y + 70), 2)
+        
+        # Mostrar mensaje de créditos
+        y_start = modal_y + 90
+        lineas = mensaje.split('\n')
+        for i in range(len(lineas)):
+            texto_creditos = font_instruccion.render(lineas[i], True, COLOR_BLANCO)
+            texto_x = modal_x + (modal_ancho - texto_creditos.get_width()) // 2
+            screen.blit(texto_creditos, (texto_x, y_start + i * 30))
+
+
         
         # Instrucción para salir
         instruccion = font_instruccion.render("ESC - Volver al menu anterior", True, COLOR_VERDE)
