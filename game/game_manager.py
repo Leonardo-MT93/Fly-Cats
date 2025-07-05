@@ -5,7 +5,8 @@ from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
-# from enemies import mover_enemigo
+from game.enemies import crear_enemigo, imagen_enemigo1_escalada, crear_objetos, caer_objeto
+from game.powerups import crear_atun, crear_milk, caer_atun, caer_milk, atun_escalada, milk_escalada
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
@@ -274,6 +275,11 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     balas = []
     disparar = False
 
+    #Creamos listas de los enemigos y power ups que caeran
+    enemigos = crear_objetos(crear_enemigo, 35)
+    atunes = crear_objetos(crear_atun, 5)
+    milks = crear_objetos(crear_milk, 3)
+
     juego_activo = 1
     while juego_activo:
         for event in pygame.event.get():
@@ -306,6 +312,22 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
 
         # Fondo de juego
         screen.blit(imagen_pantalla_juego, (0, 0))
+
+        # Hacemos caer los enemigos y power ups, dibuja solo si están activas en pantalla
+        for enemigo in enemigos:
+            caer_objeto(enemigo)
+            if enemigo["activo"]:
+                screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
+
+        for atun in atunes:
+            caer_objeto(atun)
+            if atun["activo"]:
+                screen.blit(atun_escalada, (atun["x"], atun["y"]))
+
+        for milk in milks:
+            caer_objeto(milk)
+            if milk["activo"]:
+                screen.blit(milk_escalada, (milk["x"], milk["y"]))            
 
         # Dibujar jugador y balas
         dibujar_jugador(screen, jugador)

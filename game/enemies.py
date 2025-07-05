@@ -2,31 +2,49 @@
 
 # Enemigos: Perro robot
 
-from game.game_manager import pantalla_juego
 import pygame
 import config
+import random
 
-ancho = config.SCREEN_WIDTH
 alto = config.SCREEN_HEIGHT
+imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perro_robot_cayendo.png")
+imagen_enemigo1_escalada = pygame.transform.scale(imagen_enemigo1, (85, 85))
+enemigo_rect = imagen_enemigo1_escalada.get_rect()
 
-imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perrorobotvolando.png")
-enemigo_rect = imagen_enemigo1.get_rect()
 
-enemigo_x = 100
-enemigo_y = 100
-velocidad_x = 3
-
-def mover_enemigo(enemigo_x, enemigo_y, velocidad_x):
+def crear_enemigo() -> dict :
     """
-    El primer enemigo se mueve horizontalmente
+    Crea enemigos de forma aleatoria y en distintos tiempos, y los posiciona siempre
+    dentro de la pantalla
     """
-    enemigo_x = 100
-    enemigo_y = 100
-    velocidad_x = 3
-    enemigo_x += velocidad_x
+    enemigo_creado = {
+        "x": random.randint(0, config.SCREEN_WIDTH - 85),  # 85 es el ancho de la imagen
+        "y": random.randint(-500, -50),  # Para que aparezcan en momentos distintos
+        "velocidad_y": random.randint(3, 6),
+        "activo": False,
+        "tiempo_espera": random.randint(60, 3600)
+    }
+    return enemigo_creado
 
-    # Rebote en los bordes 
-    if enemigo_x > ancho - enemigo_rect.width or enemigo_x < 0:
-        velocidad_x *= -1
+def crear_objetos (crear_funcion, cantidad:int) -> list :
+    """
+    Genera una lista (en este caso la usamos para enemigos y power ups)
+    """    
+    lista = []
+    for i in range(cantidad):
+        lista.append(crear_funcion())
+    return lista
 
-    return enemigo_x
+def caer_objeto(objeto: dict):
+    """
+    Se le pasa un diccionario, lo modifica y actualiza, de acuerdo al estado, tiempo y velocidad de aparicion
+    """
+    if objeto["tiempo_espera"] > 0:
+        objeto["tiempo_espera"] -= 1
+    else:
+        objeto["activo"] = True
+
+    if objeto["activo"]:
+        objeto["y"] += objeto["velocidad_y"]
+        if objeto["y"] > config.SCREEN_HEIGHT:
+            objeto["activo"] = False

@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-# Archivo de configuraciones a cargo de Agos! 
-import pygame
-
-=======
 # Archivo de configuraciones a cargo de Agos! import pygame
 import pygame
->>>>>>> fa8f46c76360a7c8312c81b6b13e54f97f3fd5e4
 def crear_bala(x, y):
     bala = {}
     bala['image'] = pygame.image.load("assets/images/bola-estambre.png").convert_alpha()
