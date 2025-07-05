@@ -21,7 +21,7 @@ RUTA_IMAGEN_INTRO_2 = "assets/images/intro/intro02.png"
 RUTA_IMAGEN_INTRO_3 = "assets/images/intro/intro03.png"
 RUTA_IMAGEN_INTRO_4 = "assets/images/intro/intro04.png"
 
-DURACION_INTRO = 2500  
+DURACION_INTRO = 4000  
 
 #Musica
 RUTA_MUSICA_MENU = "assets/sounds/music/menu_music.ogg"

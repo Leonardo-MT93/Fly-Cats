@@ -320,34 +320,47 @@ def manejar_estado_juego(screen, clock, imagenes):
 
 
 def pantalla_intro(screen, clock, imagenes):
+    tiempo_imagen = DURACION_INTRO
+    font_skipear = pygame.font.Font(None, 26)
+    font_narracion = pygame.font.Font(None, 32)
 
-    tiempo_imagen = DURACION_INTRO    
-    font_skipearintro = pygame.font.Font(None, 26)
+    textos_intro = [
+        "Los gatos vivían en paz, disfrutando del atún, la lana y la compañía.",
+        "Pero desde el espacio, un ejército de perros robots planea una invasión.",
+        "Los perros atacaron la ciudad... ¡y solo un gato se atrevió a defenderla!",
+        "Vos sos el Capitán Gato. ¡La misión comienza ahora!"
+    ]
 
     for i in range(1, 5):
-        clave_imagen = f'img{i}'  # Genera los nombres de las claves: 'img1', etc.
+        clave_imagen = f'img{i}'
         imagen_actual = imagenes[clave_imagen]
+        texto_actual = textos_intro[i - 1]  # Recordá que listas arrancan en 0
+
         tiempo_inicio = pygame.time.get_ticks()
 
         while pygame.time.get_ticks() - tiempo_inicio < tiempo_imagen:
-            # Manejar eventos (permitir saltar la intro)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return "SALIR"
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        return "SALTAR"  # Saltar introduccion del juego
-            # Dibujar la imagen actual
+                        return "SALTAR"
+
             screen.blit(imagen_actual, (0, 0))
 
-            texto_skipear = font_skipearintro.render("Presiona SPACE para saltar la intro", True, COLOR_VERDE)
+            # Mostrar texto de la historia
+            texto_render = font_narracion.render(texto_actual, True, (255, 255, 255))
+            screen.blit(texto_render, (40, SCREEN_HEIGHT - 100))
+
+            # Mostrar texto para saltar
+            texto_skipear = font_skipear.render("Presiona SPACE para saltar la intro", True, COLOR_VERDE)
             texto_x = SCREEN_WIDTH - texto_skipear.get_width() - 20
             texto_y = SCREEN_HEIGHT - texto_skipear.get_height() - 20
             screen.blit(texto_skipear, (texto_x, texto_y))
 
             pygame.display.flip()
             clock.tick(FPS)
-    
+
     return "COMPLETADA"
 
 def manejar_estado_intro(screen, clock, imagenes):
