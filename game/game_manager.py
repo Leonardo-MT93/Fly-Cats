@@ -5,7 +5,7 @@ from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
-from game.enemies import crear_enemigo, mover_enemigo, imagen_enemigo1_escalada
+from game.enemies import crear_enemigo, mover_enemigo, imagen_enemigo1_escalada, crear_objetos, caer_objeto
 from game.powerups import crear_atun, crear_milk, caer_atun, caer_milk, atun_escalada, milk_escalada
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
@@ -204,14 +204,11 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     milks = []
 
     #
-    for i in range(20):  
-        enemigos.append(crear_enemigo())
+    enemigos = crear_objetos(crear_enemigo, 35)
 
-    for i in range(5):  
-        atunes.append(crear_atun())
+    atunes = crear_objetos(crear_atun, 5)
 
-    for i in range(5):  
-        milks.append(crear_milk())    
+    milks = crear_objetos(crear_milk, 3)
 
     juego_activo = 1
     while juego_activo:
@@ -248,18 +245,21 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
 
         #Caida enemigo
         for enemigo in enemigos:
-            mover_enemigo(enemigo)
-            screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
+            caer_objeto(enemigo)
+            if enemigo["activo"]:
+                screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
 
         #Caida lata de atun
         for atun in atunes:
-            caer_atun(atun)
-            screen.blit(atun_escalada, (atun["x"], atun["y"]))
+            caer_objeto(atun)
+            if atun["activo"]:
+                screen.blit(atun_escalada, (atun["x"], atun["y"]))
 
         #Caida botella de leche
         for milk in milks:
-            caer_milk(milk)
-            screen.blit(milk_escalada, (milk["x"], milk["y"]))
+            caer_objeto(milk)
+            if milk["activo"]:
+                screen.blit(milk_escalada, (milk["x"], milk["y"]))            
 
         # Dibujar jugador y balas
         dibujar_jugador(screen, jugador)
