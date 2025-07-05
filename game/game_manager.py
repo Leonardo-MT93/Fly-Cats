@@ -2,7 +2,7 @@
 
 import pygame
 from config import *
-from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones
+from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
 from game.enemies import crear_enemigo, imagen_enemigo1_escalada, crear_objetos, caer_objeto
@@ -61,14 +61,15 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
 
     return rectangulos #Aca devolvemos los rectangulos para poder  usarlos en el evento del mouse
 
-def mostrar_menu_principal(screen, clock, imagen_fondo):
+def pantalla_menu_principal(screen, clock, imagen_fondo):
     """Pantalla del menú principal"""
     opciones = ["JUGAR", "RANKING", "CREDITOS", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
     
-    cargar_musica("assets/sounds/music/menu_music.ogg")
-    reproducir_musica(volumen=0.1)
+    reproducir_musica_si_necesario(RUTA_MUSICA_MENU, VOLUMEN_MENU)
+    # cargar_musica("assets/sounds/music/menu_music.ogg")
+    # reproducir_musica(volumen=0.1)
     
     juego_activo = 1
     while juego_activo:
@@ -111,8 +112,10 @@ def mostrar_menu_principal(screen, clock, imagen_fondo):
                             break
             
             if opcion_ejecutada:
+                if opciones[opcion_seleccionada] == "JUGAR" or opciones[opcion_seleccionada] == "SALIR":
                     detener_musica()
-                    return opciones[opcion_seleccionada]
+                return opciones[opcion_seleccionada]
+
         
         contador_parpadeo += 1
         
@@ -205,8 +208,9 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
     contador_parpadeo = 0
     
     # Reproducir música de game over
-    cargar_musica("assets/sounds/music/game_over_music.ogg")
-    reproducir_musica(volumen=0.1)
+    reproducir_musica_si_necesario(RUTA_MUSICA_GAME_OVER, VOLUMEN_GAME_OVER)
+    # cargar_musica("assets/sounds/music/game_over_music.ogg")
+    # reproducir_musica(volumen=0.1)
     
     juego_activo = 1
     while juego_activo:
@@ -248,7 +252,8 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
                             break
             
             if opcion_ejecutada:
-                detener_musica()
+                if opciones[opcion_seleccionada] == "REINTENTAR" or opciones[opcion_seleccionada] == "SALIR":
+                    detener_musica()
                 return opciones[opcion_seleccionada]
         
         contador_parpadeo += 1
@@ -266,9 +271,11 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
         clock.tick(FPS)
  
 def pantalla_juego(screen, clock, imagen_pantalla_juego):
-    """Pantalla de juego - completamente negra para completar por Vish/Agos"""
+    """Pantalla de juego - completamente para completar por Vish/Agos"""
     font_small = pygame.font.Font(None, 32)
-    color_verde = COLOR_VERDE
+    cargar_musica("assets/sounds/music/game_music.ogg")
+    reproducir_musica(volumen=0.1)
+    # 
     #carga la imagen de la pantalla de juego con imagen_pantalla_juego
 
     jugador = crear_jugador(screen.get_width(), screen.get_height())
@@ -287,8 +294,10 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
                 return "SALIR"
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    detener_musica()
                     return "MENU"
                 elif event.key == pygame.K_5:
+                    detener_musica()
                     return "GAME_OVER"
 
         # Movimiento del jugador
@@ -343,3 +352,63 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         pygame.display.flip()
         clock.tick(FPS)
 
+
+def procesar_puntuacion():
+    "procesa el puntaje obtenido"
+
+def manejar_estado_menu_principal(screen, clock, imagenes):
+    """Maneja el estado del menú principal"""
+    resultado = pantalla_menu_principal(screen, clock, imagenes['fondos']['menu'])
+
+    match resultado:
+            case "JUGAR":
+                    return ESTADO_JUEGO, 0
+            case "RANKING":
+                resultado_ranking = mostrar_modal_puntuaciones(screen, clock, imagenes['fondos']['menu'])
+                if resultado_ranking == "SALIR":
+                    return None, 0
+                return ESTADO_MENU, 0
+            case "CREDITOS":
+                resultado_creditos = mostrar_modal_creditos(screen, clock, imagenes['fondos']['menu'])
+                if resultado_creditos == "SALIR":
+                    return None, 0
+                return ESTADO_MENU, 0
+            case "SALIR":
+                    return None, 0
+            case _:
+                    return ESTADO_MENU, 0
+        
+
+def manejar_estado_juego(screen, clock, imagenes):
+    resultado = pantalla_juego(screen, clock, imagenes['fondos']['juego'])
+
+    match resultado:
+        case "MENU":
+            return ESTADO_MENU, 0
+        case "GAME_OVER":
+            #falta implementar logica de puntaje obtenido
+            # puntuacion, es_record = procesar_puntuacion() 
+            # return ESTADO_GAME_OVER, puntuacion
+            return ESTADO_GAME_OVER, 0
+        case "SALIR":
+            return None, 0
+        case _:
+            return ESTADO_JUEGO, 0
+
+def manejar_estado_gameover(screen, clock, imagenes, puntuacion):
+    """Maneja el estado de game over"""
+    resultado = pantalla_game_over(screen, clock, imagenes['fondos']['game_over'], puntuacion)
+
+    match resultado:
+        case "REINTENTAR":
+            return ESTADO_JUEGO, 0
+        case "RANKING":
+            resultado_ranking = mostrar_modal_puntuaciones(screen, clock, imagenes['fondos']['game_over'])
+            if resultado_ranking == "SALIR":
+                return None, 0
+            return ESTADO_GAME_OVER, puntuacion
+        case "MENU":
+            return ESTADO_MENU, 0
+        case "SALIR":
+            return None, 0
+        

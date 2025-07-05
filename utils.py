@@ -2,12 +2,47 @@
 from config import *
 import pygame
 import csv
+import sys
 
 def cargar_imagen_fondo(ruta_imagen):
     """Carga y escala la imagen de fondo"""
     imagen = pygame.image.load(ruta_imagen)
     imagen_escalada = pygame.transform.scale(imagen, (SCREEN_WIDTH, SCREEN_HEIGHT))
     return imagen_escalada
+
+#manejo de juego
+
+def iniciar_juego():
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption(TITULO_JUEGO)
+    clock = pygame.time.Clock()
+    icono = pygame.image.load(RUTA_ICONO_JUEGO)
+    pygame.display.set_icon(icono)
+    
+    return screen, clock
+
+def cargar_todas_las_imagenes():
+    return {
+        'fondos': {
+            'menu': cargar_imagen_fondo(RUTA_IMAGEN_FONDO_MENU_PRINCIPAL),
+            'game_over': cargar_imagen_fondo(RUTA_IMAGEN_FIN_DEL_JUEGO),
+            'juego': cargar_imagen_fondo(RUTA_IMAGEN_PANTALLA_JUEGO),
+            # 'victoria': cargar_imagen_fondo("assets/images/victoria.png") falta implementar imagen
+        },
+        'sprites': {
+            # falta implementar imagenes de los sprites
+        },
+        'iconos': {
+            # 'vida': pygame.image.load("assets/images/ui/vida.png"), falta implementar imagen
+        }
+    }
+
+def finalizar_juego():
+
+    pygame.quit()
+    sys.exit()
+
 
 
 # Musica del juego
@@ -16,7 +51,7 @@ def cargar_musica(ruta_musica):
     """Carga una canción"""
     pygame.mixer.music.load(ruta_musica)
 
-def reproducir_musica(volumen=0.1, loops=-1):
+def reproducir_musica(volumen, loops=-1):
     """Reproduce la música cargada"""
     pygame.mixer.music.set_volume(volumen)
     pygame.mixer.music.play(loops)  # loops=-1 significa repetir infinitamente
@@ -24,6 +59,17 @@ def reproducir_musica(volumen=0.1, loops=-1):
 def detener_musica():
     """Detiene la música actual"""
     pygame.mixer.music.stop()
+
+def esta_reproduciendo_musica():
+    """Verifica si la música está reproduciéndose"""
+    return pygame.mixer.music.get_busy()
+def reproducir_musica_si_necesario(ruta_musica, volumen):
+    """Reproduce la música si no se está reproduciendo"""
+    if not esta_reproduciendo_musica():
+        cargar_musica(ruta_musica)
+        reproducir_musica(volumen)
+    else:
+        print("La música ya se está reproduciendo.")
 
 #Funciones para manejar el archivo csv
 def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
@@ -45,7 +91,6 @@ def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
     archivo_csv.close()
     
     # Ordenanamieto de mayor a mneor utilizando bubble sort
-    # print("Ordenando puntuaciones...")
     n = len(puntuaciones)
 
     for i in range(n):
@@ -53,7 +98,6 @@ def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
             if puntuaciones[j][1] < puntuaciones[j + 1][1]:
                 puntuaciones[j], puntuaciones[j + 1] = puntuaciones[j + 1], puntuaciones[j]
 
-    # print("Puntuaciones ordenadas:", puntuaciones)
     return puntuaciones[:10]  # solamente muestra el top10
 
 def agregar_puntuacion_csv(nombre, puntuacion, archivo="assets/puntuaciones.csv"):
@@ -193,7 +237,7 @@ def mostrar_modal_puntuaciones(screen, clock, imagen_fondo):
                 return "SALIR"
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    return "VOLVER"  # Volver al menú anterior sin detener música
+                    return "VOLVER" 
         
         # Dibujar fondo
         screen.blit(imagen_fondo, (0, 0))
@@ -260,12 +304,10 @@ def mostrar_modal_puntuaciones(screen, clock, imagen_fondo):
 def mostrar_modal_creditos(screen, clock, imagen_fondo):
     """Modal de créditos - no detiene la música"""
     font_titulo = pygame.font.Font(None, 56)
-    font_instruccion = pygame.font.Font(None, 28)
-    mensaje = "Juego desarrollado por:\nAgos, León y Vish\nUTNFRA 2025"
+    font_mensaje = pygame.font.Font(None, 28)
+    font_instruccion = pygame.font.Font(None, 24)
+    mensaje = "Juego desarrollado por La Triada Salvaje:\nAgos, León y Vish\nProfesores: Enzo Zotti y Lucas Ferrini\nUTNFRA 2025\n\nGracias a todos los que jugaron y apoyaron nuestro proyecto.\nEsperamos que lo hayan disfrutado tanto como nosotros al crearlo.\n¡Hasta la próxima aventura!"
         
-        
-    # Aca secargan las puntuaciones
-    # puntuaciones = leer_puntuaciones_csv()
         
     juego_activo = 1
 
@@ -275,7 +317,7 @@ def mostrar_modal_creditos(screen, clock, imagen_fondo):
                 return "SALIR"
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    return "VOLVER"  # Volver al menú anterior sin detener música
+                    return "VOLVER"
         
         # Dibujar fondo
         screen.blit(imagen_fondo, (0, 0))
@@ -287,7 +329,7 @@ def mostrar_modal_creditos(screen, clock, imagen_fondo):
         screen.blit(overlay, (0, 0))
         
         # Contenedor del modal
-        modal_ancho = 500
+        modal_ancho = 700
         modal_alto = 400
         modal_x = (SCREEN_WIDTH - modal_ancho) // 2
         modal_y = (SCREEN_HEIGHT - modal_alto) // 2
@@ -296,7 +338,7 @@ def mostrar_modal_creditos(screen, clock, imagen_fondo):
         pygame.draw.rect(screen, COLOR_AMARILLO, (modal_x, modal_y, modal_ancho, modal_alto), 3)
         
         # Título
-        titulo = font_titulo.render("CREDITOS", True, COLOR_AMARILLO)
+        titulo = font_titulo.render("CRÉDITOS", True, COLOR_AMARILLO)
         titulo_x = modal_x + (modal_ancho - titulo.get_width()) // 2
         screen.blit(titulo, (titulo_x, modal_y + 20))
         
@@ -305,17 +347,15 @@ def mostrar_modal_creditos(screen, clock, imagen_fondo):
                         (modal_x + 20, modal_y + 70), 
                         (modal_x + modal_ancho - 20, modal_y + 70), 2)
         
-        # Mostrar mensaje de créditos
+        # Se muestra el mensaje de créditos
         y_start = modal_y + 90
         lineas = mensaje.split('\n')
         for i in range(len(lineas)):
-            texto_creditos = font_instruccion.render(lineas[i], True, COLOR_BLANCO)
+            texto_creditos = font_mensaje.render(lineas[i], True, COLOR_BLANCO)
             texto_x = modal_x + (modal_ancho - texto_creditos.get_width()) // 2
             screen.blit(texto_creditos, (texto_x, y_start + i * 30))
 
-
-        
-        # Instrucción para salir
+        # Instrucciones para salir
         instruccion = font_instruccion.render("ESC - Volver al menu anterior", True, COLOR_VERDE)
         instr_x = modal_x + (modal_ancho - instruccion.get_width()) // 2
         screen.blit(instruccion, (instr_x, modal_y + modal_alto - 40))
