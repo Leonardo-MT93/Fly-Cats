@@ -4,7 +4,7 @@
 
 ### 📁 CLONAR EL PROYECTO:
 ```bash
-git clone https://github.com/Leonardo-MT93/Tp---Programacion1---UTN.git fly-cats-game
+git clone https://github.com/Leonardo-MT93/Fly-Cats.git
 cd fly-cats-game
 ```
 

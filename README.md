@@ -74,21 +74,29 @@ python main.py
 
 ```
 fly-cats-game/
-├── assets/                 # Recursos gráficos y sonoros
-│   ├── images/            # Imágenes del juego
-│   ├── player/            # Sprites del jugador (🦋 Agostina)
-│   ├── enemies/           # Sprites de enemigos (🐅 Vish)
-│   └── powerups/          # Sprites de power-ups (🐅 Vish)
-├── game/                  # Módulos del juego
-│   ├── player.py          # Lógica del jugador (🦋 Agostina)
-│   ├── bullet.py          # Sistema de proyectiles (🦋 Agostina)
-│   ├── enemies.py         # Lógica de enemigos (🐅 Vish)
-│   ├── powerups.py        # Sistema de power-ups (🐅 Vish)
-│   └── game_manager.py    # Controlador principal (🦁 León)
-├── config.py              # Configuraciones del juego (🦁 León)
-├── utils.py               # Funciones utilitarias (🦁 León)
-├── main.py                # Punto de entrada (🦁 León)
-└── README.md              # Este archivo
+├── assets/                         # Recursos gráficos y sonoros
+│   ├── images/                     # Imágenes del juego
+│   │   ├── enemies/                # Sprites de enemigos (🐅 Vish)
+│   │   └── player/                 # Sprites del jugador (🦋 Agostina)
+│   ├── sounds/                     # Audio del juego
+│   │   └── music/                  # Música de fondo
+│   │       ├── game_over_music.ogg  # Música de Game Over
+│   │       ├── menu_music.ogg       # Música del menú principal
+│   │       └── [pendiente: sonido de juego]  # Música durante gameplay
+│   └── puntuaciones.csv            # Archivo de puntuaciones y récords
+├── game/                           # Módulos del juego
+│   ├── __init__.py                 # Inicializador del paquete
+│   ├── bullet.py                   # Sistema de proyectiles (🦋 Agostina)
+│   ├── enemies.py                  # Lógica de enemigos (🐅 Vish)
+│   ├── game_manager.py             # Controlador principal (🦁 León, 🐅 Vish y 🦋 Agostina)
+│   ├── player.py                   # Lógica del jugador (🦋 Agostina)
+│   └── powerups.py                 # Sistema de power-ups (🐅 Vish)
+├── .gitignore                      # Archivos ignorados por Git
+├── config.py                       # Configuraciones del juego (🦁 León)
+├── INSTRUCCIONES_EQUIPO.md         # Guía de trabajo para La Triada Salvaje
+├── main.py                         # Punto de entrada del juego (🦁 León)
+├── README.md                       # Este archivo
+└── utils.py                        # Funciones utilitarias (🦁 León)
 ```
 
 ## 🎨 Assets y Recursos (por definir)
@@ -112,6 +120,7 @@ Este proyecto es parte del curso de Programación 1 de la UTN, enfocado en:
 Este proyecto no debe tener los siguientes temas no visto en la cursada:
 - Try - Except
 - Clases de python
+- Funcion Lambda
 
 ## 📈 Estado del Desarrollo
 
@@ -120,11 +129,11 @@ Este proyecto no debe tener los siguientes temas no visto en la cursada:
 - [x] Asignación de roles por espíritu animal
 - [x] Sistema básico del jugador
 - [x] Sistema de enemigos
-- [x] Detección de colisiones
+- [x] Sonidos y música
+- [x] Menú principal
+- [ ] Detección de colisiones
 - [ ] Sistema de power-ups
-- [ ] Múltiples niveles
-- [ ] Sonidos y música
-- [ ] Menú principal
+- [ ] Aumento de dificultad al pasar el tiempo
 - [ ] Sistema de puntuaciones
 - [ ] Easter eggs de La Triada Salvaje
 
