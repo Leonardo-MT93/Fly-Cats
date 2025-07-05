@@ -16,6 +16,12 @@ RUTA_IMAGEN_FONDO_MENU_PRINCIPAL = "assets/images/portada.png"
 RUTA_IMAGEN_FIN_DEL_JUEGO = "assets/images/game_over.png"
 RUTA_IMAGEN_PANTALLA_JUEGO = "assets/images/pantalla_juego.png"
 RUTA_ICONO_JUEGO = "assets/images/icono.png"
+RUTA_IMAGEN_INTRO_1 = "assets/images/intro/intro01.png"
+RUTA_IMAGEN_INTRO_2 = "assets/images/intro/intro02.png" 
+RUTA_IMAGEN_INTRO_3 = "assets/images/intro/intro03.png"
+RUTA_IMAGEN_INTRO_4 = "assets/images/intro/intro04.png"
+
+DURACION_INTRO = 2500  
 
 #Musica
 RUTA_MUSICA_MENU = "assets/sounds/music/menu_music.ogg"
@@ -35,6 +41,7 @@ OPCIONES_MENU_PRINCIPAL = ["JUGAR", "RANKING", "CREDITOS", "SALIR"]
 OPCIONES_GAME_OVER = ["REINTENTAR", "RANKING", "SALIR"]
 
 #estados del juego
+ESTADO_INTRO = "INTRO"
 ESTADO_MENU = "MENU"
 ESTADO_JUEGO = "JUEGO"
 ESTADO_GAME_OVER = "GAME_OVER"

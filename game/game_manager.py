@@ -11,11 +11,7 @@ from game.powerups import crear_atun, crear_milk, caer_atun, caer_milk, atun_esc
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
     font_botones = pygame.font.Font(None, 48)
-    font_small = pygame.font.Font(None, 32)
-    
-    color_verde = COLOR_VERDE
-    color_blanco = COLOR_BLANCO
-    color_amarillo = COLOR_AMARILLO
+    font_small = pygame.font.Font(None, 28)
     
     # Dibujar fondo
     screen.blit(imagen_fondo, (0, 0))
@@ -27,11 +23,11 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
         
         if i == opcion_seleccionada:
             if contador_parpadeo % 30 < 15:
-                color = color_amarillo
+                color = COLOR_AMARILLO
             else:
-                color = color_blanco
+                color = COLOR_BLANCO
         else:
-            color = color_blanco
+            color = COLOR_BLANCO
 
         
         texto = font_botones.render(opcion, True, color)
@@ -42,20 +38,20 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
         rectangulos.append(rect)
 
         # DIibujo test de cada rectangulo
-        if i == opcion_seleccionada:
-            pygame.draw.rect(screen, (255, 255, 0), rect, 3)  # Amarillo para seleccionado
-        else:
-            pygame.draw.rect(screen, (255, 0, 0), rect, 2)     # Rojo para no seleccionado
+        # if i == opcion_seleccionada:
+        #     pygame.draw.rect(screen, (255, 255, 0), rect, 3)  # Amarillo para seleccionado
+        # else:
+        #     pygame.draw.rect(screen, (255, 0, 0), rect, 2)     # Rojo para no seleccionado
         
         if i == opcion_seleccionada:
-            indicador = font_botones.render(">", True, color_amarillo)
+            indicador = font_botones.render(">", True, COLOR_AMARILLO)
             screen.blit(indicador, (x - 50, y))
         
         screen.blit(texto, (x, y))
     
     # Instrucciones para que el usuario sepa cómo navegar en el juego..
     instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
-                                   True, color_verde)
+                                   True, COLOR_VERDE)
     instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
     screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30))
 
@@ -63,7 +59,6 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
 
 def pantalla_menu_principal(screen, clock, imagen_fondo):
     """Pantalla del menú principal"""
-    opciones = ["JUGAR", "RANKING", "CREDITOS", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
     
@@ -89,10 +84,10 @@ def pantalla_menu_principal(screen, clock, imagen_fondo):
                 if event.key == pygame.K_UP:
                     opcion_seleccionada = opcion_seleccionada - 1
                     if opcion_seleccionada < 0:
-                        opcion_seleccionada = len(opciones) - 1 
+                        opcion_seleccionada = len(OPCIONES_MENU_PRINCIPAL) - 1 
                 elif event.key == pygame.K_DOWN:
                     opcion_seleccionada = opcion_seleccionada + 1
-                    if opcion_seleccionada >= len(opciones):
+                    if opcion_seleccionada >= len(OPCIONES_MENU_PRINCIPAL):
                         opcion_seleccionada = 0 
                 
                 elif event.key == pygame.K_RETURN:
@@ -101,7 +96,7 @@ def pantalla_menu_principal(screen, clock, imagen_fondo):
             # Mouse
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Click izquierdo
-                    rectangulos = dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo)
+                    rectangulos = dibujar_menu_principal(screen, OPCIONES_MENU_PRINCIPAL, opcion_seleccionada, contador_parpadeo, imagen_fondo)
                     
                     # Verificamos que el mouse colisione con los rectangulos
                     for i in range(len(rectangulos)):
@@ -112,15 +107,15 @@ def pantalla_menu_principal(screen, clock, imagen_fondo):
                             break
             
             if opcion_ejecutada:
-                if opciones[opcion_seleccionada] == "JUGAR" or opciones[opcion_seleccionada] == "SALIR":
+                if OPCIONES_MENU_PRINCIPAL[opcion_seleccionada] == "JUGAR" or OPCIONES_MENU_PRINCIPAL[opcion_seleccionada] == "SALIR":
                     detener_musica()
-                return opciones[opcion_seleccionada]
+                return OPCIONES_MENU_PRINCIPAL[opcion_seleccionada]
 
         
         contador_parpadeo += 1
         
         # Efecto hover para el mouse
-        rectangulos = dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo)
+        rectangulos = dibujar_menu_principal(screen, OPCIONES_MENU_PRINCIPAL, opcion_seleccionada, contador_parpadeo, imagen_fondo)
         if rectangulos:
             for i in range(len(rectangulos)):
                 rect = rectangulos[i]
@@ -130,22 +125,41 @@ def pantalla_menu_principal(screen, clock, imagen_fondo):
        
         pygame.display.flip()
         clock.tick(FPS)
+
+def manejar_estado_menu_principal(screen, clock, imagenes):
+    resultado = pantalla_menu_principal(screen, clock, imagenes['fondos']['menu'])
+
+    match resultado:
+            case "JUGAR":
+                    return ESTADO_JUEGO, 0
+            case "RANKING":
+                resultado_ranking = mostrar_modal_puntuaciones(screen, clock, imagenes['fondos']['menu'])
+                if resultado_ranking == "SALIR":
+                    return None, 0
+                return ESTADO_MENU, 0
+            case "CREDITOS":
+                resultado_creditos = mostrar_modal_creditos(screen, clock, imagenes['fondos']['menu'])
+                if resultado_creditos == "SALIR":
+                    return None, 0
+                return ESTADO_MENU, 0
+            case "SALIR":
+                    return None, 0
+            case _:
+                    return ESTADO_MENU, 0
+        
+
 def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion=0):
     """Dibuja la pantalla de game over"""
     font_subtitulo = pygame.font.Font(None, 48)
     font_botones = pygame.font.Font(None, 36)
     font_small = pygame.font.Font(None, 28)
-    
-    color_blanco = COLOR_BLANCO
-    color_amarillo = COLOR_AMARILLO
-    color_verde = COLOR_VERDE
-    color_gris = COLOR_GRIS
+
     
     # Dibuja fondo (igual que el menú principal)
     screen.blit(imagen_fondo_final, (0, 0))
     
     #Checklist: Puntuación final ficticio - falta implementar
-    puntuacion_texto = font_subtitulo.render(f"Puntuación Final: {puntuacion}", True, color_amarillo)
+    puntuacion_texto = font_subtitulo.render(f"Puntuación Final: {puntuacion}", True, COLOR_AMARILLO)
     punt_x = SCREEN_WIDTH // 2 - puntuacion_texto.get_width() // 2
     screen.blit(puntuacion_texto, (punt_x, 180))
     
@@ -156,7 +170,7 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
         "¿Intentarás defender el planeta otra vez?"
     ]
     for i in range(len(mensajes)):
-        texto = font_small.render(mensajes[i], True, color_gris)
+        texto = font_small.render(mensajes[i], True, COLOR_GRIS)
         x = SCREEN_WIDTH // 2 - texto.get_width() // 2
         screen.blit(texto, (x, 250 + i * 30))
     
@@ -168,11 +182,11 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
         # Parpadeo
         if i == opcion_seleccionada:
             if contador_parpadeo % 30 < 15:
-                color = color_amarillo
+                color = COLOR_AMARILLO
             else:
-                color = color_blanco
+                color = COLOR_BLANCO
         else:
-            color = color_blanco
+            color = COLOR_BLANCO
         
         texto = font_botones.render(opcion, True, color)
         x = SCREEN_WIDTH // 2 - texto.get_width() // 2
@@ -181,21 +195,21 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
         rect = pygame.Rect(x - 50 , y - 10, texto.get_width() + 100, texto.get_height() + 20)
         rectangulos.append(rect)
         # DIibujo test de cada rectangulo
-        if i == opcion_seleccionada:
-            pygame.draw.rect(screen, (255, 255, 0), rect, 3)  # Amarillo para seleccionado
-        else:
-            pygame.draw.rect(screen, (255, 0, 0), rect, 2)     # Rojo para no seleccionado
+        # if i == opcion_seleccionada:
+        #     pygame.draw.rect(screen, (255, 255, 0), rect, 3)  # Amarillo para seleccionado
+        # else:
+        #     pygame.draw.rect(screen, (255, 0, 0), rect, 2)     # Rojo para no seleccionado
         
 
         if i == opcion_seleccionada:
-            indicador = font_botones.render(">", True, color_amarillo)
+            indicador = font_botones.render(">", True, COLOR_AMARILLO)
             screen.blit(indicador, (x - 40, y))
         
         screen.blit(texto, (x, y))
     
     # Instrucciones PARA navegar en el menu 
     instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
-                                   True, color_verde)
+                                   True, COLOR_VERDE)
     instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
     screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30))
 
@@ -203,7 +217,6 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
 
 def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
     """Pantalla de fin del juego"""
-    opciones = ["REINTENTAR", "RANKING", "SALIR"]
     opcion_seleccionada = 0
     contador_parpadeo = 0
     
@@ -229,10 +242,10 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
                 if event.key == pygame.K_UP:
                     opcion_seleccionada = opcion_seleccionada - 1
                     if opcion_seleccionada < 0:
-                        opcion_seleccionada = len(opciones) - 1
+                        opcion_seleccionada = len(OPCIONES_GAME_OVER) - 1
                 elif event.key == pygame.K_DOWN:
                     opcion_seleccionada = opcion_seleccionada + 1
-                    if opcion_seleccionada >= len(opciones):
+                    if opcion_seleccionada >= len(OPCIONES_GAME_OVER):
                         opcion_seleccionada = 0
                 
                 elif event.key == pygame.K_RETURN:
@@ -241,7 +254,7 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
             # Mouse
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Click izquierdo
-                    rectangulos = dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion)
+                    rectangulos = dibujar_game_over(screen, OPCIONES_GAME_OVER, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion)
                     
                     # Verificamos que el mouse colisione con los rectangulos
                     for i in range(len(rectangulos)):
@@ -252,14 +265,14 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
                             break
             
             if opcion_ejecutada:
-                if opciones[opcion_seleccionada] == "REINTENTAR" or opciones[opcion_seleccionada] == "SALIR":
+                if OPCIONES_GAME_OVER[opcion_seleccionada] == "REINTENTAR" or OPCIONES_GAME_OVER[opcion_seleccionada] == "SALIR":
                     detener_musica()
-                return opciones[opcion_seleccionada]
+                return OPCIONES_GAME_OVER[opcion_seleccionada]
         
         contador_parpadeo += 1
         
         # Efecto hover para el mouse
-        rectangulos = dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion)
+        rectangulos = dibujar_game_over(screen, OPCIONES_GAME_OVER, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion)
         if rectangulos:
             for i in range(len(rectangulos)):
                 rect = rectangulos[i]
@@ -270,6 +283,86 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
         pygame.display.flip()
         clock.tick(FPS)
  
+def manejar_estado_gameover(screen, clock, imagenes, puntuacion):
+    resultado = pantalla_game_over(screen, clock, imagenes['fondos']['game_over'], puntuacion)
+
+    match resultado:
+        case "REINTENTAR":
+            return ESTADO_JUEGO, 0
+        case "RANKING":
+            resultado_ranking = mostrar_modal_puntuaciones(screen, clock, imagenes['fondos']['game_over'])
+            if resultado_ranking == "SALIR":
+                return None, 0
+            return ESTADO_GAME_OVER, puntuacion
+        case "MENU":
+            return ESTADO_MENU, 0
+        case "SALIR":
+            return None, 0
+  
+def procesar_puntuacion():
+    "procesa el puntaje obtenido"
+
+def manejar_estado_juego(screen, clock, imagenes):
+    resultado = pantalla_juego(screen, clock, imagenes['fondos']['juego'])
+
+    match resultado:
+        case "MENU":
+            return ESTADO_MENU, 0
+        case "GAME_OVER":
+            #falta implementar logica de puntaje obtenido
+            # puntuacion, es_record = procesar_puntuacion() 
+            # return ESTADO_GAME_OVER, puntuacion
+            return ESTADO_GAME_OVER, 0
+        case "SALIR":
+            return None, 0
+        case _:
+            return ESTADO_JUEGO, 0
+
+
+def pantalla_intro(screen, clock, imagenes):
+
+    tiempo_imagen = DURACION_INTRO    
+    font_skipearintro = pygame.font.Font(None, 26)
+
+    for i in range(1, 5):
+        clave_imagen = f'img{i}'  # Genera los nombres de las claves: 'img1', etc.
+        imagen_actual = imagenes[clave_imagen]
+        tiempo_inicio = pygame.time.get_ticks()
+
+        while pygame.time.get_ticks() - tiempo_inicio < tiempo_imagen:
+            # Manejar eventos (permitir saltar la intro)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return "SALIR"
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        return "SALTAR"  # Saltar introduccion del juego
+            # Dibujar la imagen actual
+            screen.blit(imagen_actual, (0, 0))
+
+            texto_skipear = font_skipearintro.render("Presiona SPACE para saltar la intro", True, COLOR_VERDE)
+            texto_x = SCREEN_WIDTH - texto_skipear.get_width() - 20
+            texto_y = SCREEN_HEIGHT - texto_skipear.get_height() - 20
+            screen.blit(texto_skipear, (texto_x, texto_y))
+
+            pygame.display.flip()
+            clock.tick(FPS)
+    
+    return "COMPLETADA"
+
+def manejar_estado_intro(screen, clock, imagenes):
+    resultado = pantalla_intro(screen, clock, imagenes['intro'])
+
+    match resultado:
+        case "COMPLETADA":
+            return ESTADO_MENU, 0
+        case "SALTAR":
+            return ESTADO_MENU, 0
+        case "SALIR":
+            return None, 0
+        case _:
+            return ESTADO_MENU, 0
+    
 def pantalla_juego(screen, clock, imagen_pantalla_juego):
     """Pantalla de juego - completamente para completar por Vish/Agos"""
     font_small = pygame.font.Font(None, 32)
@@ -352,63 +445,3 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         pygame.display.flip()
         clock.tick(FPS)
 
-
-def procesar_puntuacion():
-    "procesa el puntaje obtenido"
-
-def manejar_estado_menu_principal(screen, clock, imagenes):
-    """Maneja el estado del menú principal"""
-    resultado = pantalla_menu_principal(screen, clock, imagenes['fondos']['menu'])
-
-    match resultado:
-            case "JUGAR":
-                    return ESTADO_JUEGO, 0
-            case "RANKING":
-                resultado_ranking = mostrar_modal_puntuaciones(screen, clock, imagenes['fondos']['menu'])
-                if resultado_ranking == "SALIR":
-                    return None, 0
-                return ESTADO_MENU, 0
-            case "CREDITOS":
-                resultado_creditos = mostrar_modal_creditos(screen, clock, imagenes['fondos']['menu'])
-                if resultado_creditos == "SALIR":
-                    return None, 0
-                return ESTADO_MENU, 0
-            case "SALIR":
-                    return None, 0
-            case _:
-                    return ESTADO_MENU, 0
-        
-
-def manejar_estado_juego(screen, clock, imagenes):
-    resultado = pantalla_juego(screen, clock, imagenes['fondos']['juego'])
-
-    match resultado:
-        case "MENU":
-            return ESTADO_MENU, 0
-        case "GAME_OVER":
-            #falta implementar logica de puntaje obtenido
-            # puntuacion, es_record = procesar_puntuacion() 
-            # return ESTADO_GAME_OVER, puntuacion
-            return ESTADO_GAME_OVER, 0
-        case "SALIR":
-            return None, 0
-        case _:
-            return ESTADO_JUEGO, 0
-
-def manejar_estado_gameover(screen, clock, imagenes, puntuacion):
-    """Maneja el estado de game over"""
-    resultado = pantalla_game_over(screen, clock, imagenes['fondos']['game_over'], puntuacion)
-
-    match resultado:
-        case "REINTENTAR":
-            return ESTADO_JUEGO, 0
-        case "RANKING":
-            resultado_ranking = mostrar_modal_puntuaciones(screen, clock, imagenes['fondos']['game_over'])
-            if resultado_ranking == "SALIR":
-                return None, 0
-            return ESTADO_GAME_OVER, puntuacion
-        case "MENU":
-            return ESTADO_MENU, 0
-        case "SALIR":
-            return None, 0
-        

@@ -24,6 +24,12 @@ def iniciar_juego():
 
 def cargar_todas_las_imagenes():
     return {
+        'intro': {
+            'img1': cargar_imagen_fondo(RUTA_IMAGEN_INTRO_1),
+            'img2': cargar_imagen_fondo(RUTA_IMAGEN_INTRO_2),
+            'img3': cargar_imagen_fondo(RUTA_IMAGEN_INTRO_3),
+            'img4': cargar_imagen_fondo(RUTA_IMAGEN_INTRO_4),
+        },
         'fondos': {
             'menu': cargar_imagen_fondo(RUTA_IMAGEN_FONDO_MENU_PRINCIPAL),
             'game_over': cargar_imagen_fondo(RUTA_IMAGEN_FIN_DEL_JUEGO),
