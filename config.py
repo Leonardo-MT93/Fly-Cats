@@ -35,6 +35,8 @@ VOLUMEN_MUSICA_INTRO = 0.3
 #Sonidos
 RUTA_SONIDO_DISPARO = "assets/sounds/effects/disparo.ogg"
 VOLUMEN_SONIDO_DISPARO = 0.1
+RUTA_SONIDO_MAULLIDO_GATO = "assets/sounds/effects/maullido-gato.ogg"
+VOLUMEN_SONIDO_MAULLIDO_GATO = 0.4
 
 #Puntuaciones
 RUTA_CSV_PUNTUACIONES = "assets/puntuaciones.csv"

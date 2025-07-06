@@ -389,6 +389,8 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     reproducir_musica(volumen=0.1)
     sonido_disparo = pygame.mixer.Sound(RUTA_SONIDO_DISPARO)
     sonido_disparo.set_volume(VOLUMEN_SONIDO_DISPARO)
+    sonido_maullido = pygame.mixer.Sound(RUTA_SONIDO_MAULLIDO_GATO)
+    sonido_maullido.set_volume(VOLUMEN_SONIDO_MAULLIDO_GATO)
     
     # Crear entidades
     imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
@@ -400,6 +402,12 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     
     doble_disparo_activo = False
     doble_disparo_timer = 0
+
+    # Parpadeo del jugador al tocar un enemigo
+    jugador_parpadeando = False
+    inicio_parpadeo = 0
+    duracion_parpadeo = 1000  # en milisegundos
+
 
     juego_activo = 1
     while juego_activo:
@@ -451,21 +459,27 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         for milk in milks:
             caer_objeto(milk)
         
-        # Detecciion de colisiones
+        # Deteccion de colisiones
         resultados_colision = procesar_todas_las_colisiones(
             rect_jugador, balas, enemigos, atunes, milks
         )
         
-        if resultados_colision["jugador_golpeado"]:
+        # Daño al jugador (solo si no está parpadeando)
+        if resultados_colision["jugador_golpeado"] and not jugador_parpadeando:
             contador_vidas -= 1
+            jugador_parpadeando = True
+            inicio_parpadeo = pygame.time.get_ticks()
+            sonido_maullido.play()
+
+        # Siempre se procesan los enemigos y power-ups
         if resultados_colision["enemigo_eliminado"]:
             contador_puntaje += 100
+
         if resultados_colision["powerup"]:
             if resultados_colision["powerup"] == "ATUN":
                 contador_puntaje += 500
                 doble_disparo_activo = True
-                doble_disparo_timer = 600  # 10 segundos de doble disparo (60 FPS * 10 segundos)
-
+                doble_disparo_timer = 600
             elif resultados_colision["powerup"] == "MILK":
                 contador_vidas += 1
         
@@ -490,8 +504,19 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             if milk["activo"]:
                 screen.blit(milk_escalada, (milk["x"], milk["y"]))
         
-        # Dibujar jugador y las balas
-        dibujar_jugador(screen, imagen_jugador, rect_jugador)
+        # Dibujar jugador con parpadeo
+        tiempo_actual = pygame.time.get_ticks()
+        if jugador_parpadeando:
+            if tiempo_actual - inicio_parpadeo > duracion_parpadeo:
+                jugador_parpadeando = False
+                dibujar_jugador(screen, imagen_jugador, rect_jugador)
+            else:
+                if (tiempo_actual // 100) % 2 == 0:
+                    dibujar_jugador(screen, imagen_jugador, rect_jugador)
+        else:
+            dibujar_jugador(screen, imagen_jugador, rect_jugador)
+
+        # Balas
         for bala in balas:
             imagen, rect, _ = bala
             dibujar_bala(screen, imagen, rect)
