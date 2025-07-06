@@ -6,7 +6,7 @@ def crear_bala(x, y) -> tuple:
 
     """
 
-    imagen = pygame.image.load("assets/images/bola-estambre.png").convert_alpha()
+    imagen = pygame.image.load("assets/images/Balas/bola-estambre.png").convert_alpha()
     imagen = pygame.transform.scale(imagen, (25, 25))
     rect = imagen.get_rect(center=(x, y))
     velocidad = -8

@@ -6,7 +6,7 @@ from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_mod
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
 from game.enemies import crear_enemigo, imagen_enemigo1_escalada, crear_objetos, caer_objeto
-from game.powerups import crear_atun, crear_milk, caer_atun, caer_milk, atun_escalada, milk_escalada
+from game.powerups import crear_atun, crear_milk, atun_escalada, milk_escalada
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
