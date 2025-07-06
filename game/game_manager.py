@@ -331,28 +331,30 @@ def pantalla_intro(screen, clock, imagenes):
         "Vos sos el Capitán Gato. ¡La misión comienza ahora!"
     ]
 
+    # Reproduce la música solo si no se está reproduciendo aún
+    reproducir_musica_si_necesario(RUTA_MUSICA_INTRO, VOLUMEN_MUSICA_INTRO)
+
     for i in range(1, 5):
         clave_imagen = f'img{i}'
         imagen_actual = imagenes[clave_imagen]
-        texto_actual = textos_intro[i - 1]  # Recordá que listas arrancan en 0
+        texto_actual = textos_intro[i - 1]
 
         tiempo_inicio = pygame.time.get_ticks()
 
         while pygame.time.get_ticks() - tiempo_inicio < tiempo_imagen:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    detener_musica()
                     return "SALIR"
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        return "SALTAR"
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    detener_musica()
+                    return "SALTAR"
 
             screen.blit(imagen_actual, (0, 0))
 
-            # Mostrar texto de la historia
             texto_render = font_narracion.render(texto_actual, True, (255, 255, 255))
             screen.blit(texto_render, (40, SCREEN_HEIGHT - 100))
 
-            # Mostrar texto para saltar
             texto_skipear = font_skipear.render("Presiona SPACE para saltar la intro", True, COLOR_VERDE)
             texto_x = SCREEN_WIDTH - texto_skipear.get_width() - 20
             texto_y = SCREEN_HEIGHT - texto_skipear.get_height() - 20
@@ -361,6 +363,7 @@ def pantalla_intro(screen, clock, imagenes):
             pygame.display.flip()
             clock.tick(FPS)
 
+    detener_musica()
     return "COMPLETADA"
 
 def manejar_estado_intro(screen, clock, imagenes):
@@ -377,13 +380,18 @@ def manejar_estado_intro(screen, clock, imagenes):
             return ESTADO_MENU, 0
     
 def pantalla_juego(screen, clock, imagen_pantalla_juego):
-    """Pantalla de juego - completamente para completar por Vish/Agos"""
+    """Pantalla de juego"""
     font_small = pygame.font.Font(None, 32)
+
+    # Música de fondo
     cargar_musica("assets/sounds/music/game_music.ogg")
     reproducir_musica(volumen=0.1)
-    # 
-    #carga la imagen de la pantalla de juego con imagen_pantalla_juego
 
+    # Sonido de disparo
+    sonido_disparo = pygame.mixer.Sound(RUTA_SONIDO_DISPARO)
+    sonido_disparo.set_volume(VOLUMEN_SONIDO_DISPARO)
+
+    # Crear jugador
     imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
@@ -411,9 +419,9 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         mover_jugador(rect_jugador, keys, screen.get_width(), screen.get_height(), velocidad_jugador)
 
 
-        # Disparo de balas
         if keys[pygame.K_SPACE]:
             if not disparar:
+                sonido_disparo.play()  #Sonido de disparo
                 imagen_bala, rect_bala, velocidad_bala = crear_bala(rect_jugador.centerx, rect_jugador.top)
                 balas.append((imagen_bala, rect_bala, velocidad_bala))
                 disparar = True

@@ -21,14 +21,20 @@ RUTA_IMAGEN_INTRO_2 = "assets/images/intro/intro02.png"
 RUTA_IMAGEN_INTRO_3 = "assets/images/intro/intro03.png"
 RUTA_IMAGEN_INTRO_4 = "assets/images/intro/intro04.png"
 
-DURACION_INTRO = 4000  
+DURACION_INTRO = 5000  
 
 #Musica
 RUTA_MUSICA_MENU = "assets/sounds/music/menu_music.ogg"
 RUTA_MUSICA_GAME_OVER = "assets/sounds/music/game_over_music.ogg"
 RUTA_MUSICA_GAME = "assets/sounds/music/game_music.ogg"
+RUTA_MUSICA_INTRO = "assets/sounds/music/musica_intro.ogg"
 VOLUMEN_MENU = 0.1
 VOLUMEN_GAME_OVER = 0.1
+VOLUMEN_MUSICA_INTRO = 0.3
+
+#Sonidos
+RUTA_SONIDO_DISPARO = "assets/sounds/music/disparo.ogg"
+VOLUMEN_SONIDO_DISPARO = 0.1
 
 #Puntuaciones
 RUTA_CSV_PUNTUACIONES = "assets/puntuaciones.csv"
