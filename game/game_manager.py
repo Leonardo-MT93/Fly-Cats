@@ -398,6 +398,9 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     atunes = crear_objetos(crear_atun, 5)
     milks = crear_objetos(crear_milk, 3)
     
+    doble_disparo_activo = False
+    doble_disparo_timer = 0
+
     juego_activo = 1
     while juego_activo:
         
@@ -412,11 +415,25 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         if keys[pygame.K_SPACE]:
             if not disparar:
                 sonido_disparo.play()
-                imagen_bala, rect_bala, velocidad_bala = crear_bala(rect_jugador.centerx, rect_jugador.top)
-                balas.append((imagen_bala, rect_bala, velocidad_bala))
+
+                if doble_disparo_activo:
+                    # Crear DOS balas
+                    nuevas_balas = crear_doblebala(rect_jugador.centerx, rect_jugador.top)
+                    balas.extend(nuevas_balas)  # Agregar ambas balas a la lista
+                else:
+                    # Disparo normal (UNA bala)
+                    imagen_bala, rect_bala, velocidad_bala = crear_bala(rect_jugador.centerx, rect_jugador.top)
+                    balas.append((imagen_bala, rect_bala, velocidad_bala))
+                
                 disparar = True
         else:
             disparar = False
+
+        #logica del doble disparo
+        if doble_disparo_activo:
+            doble_disparo_timer -= 1
+            if doble_disparo_timer <= 0:
+                doble_disparo_activo = False
         
         for bala in balas[:]:
             imagen, rect, velocidad = bala
@@ -446,6 +463,9 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         if resultados_colision["powerup"]:
             if resultados_colision["powerup"] == "ATUN":
                 contador_puntaje += 500
+                doble_disparo_activo = True
+                doble_disparo_timer = 600  # 10 segundos de doble disparo (60 FPS * 10 segundos)
+
             elif resultados_colision["powerup"] == "MILK":
                 contador_vidas += 1
         
@@ -477,12 +497,16 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             dibujar_bala(screen, imagen, rect)
 
         status = [f"Vidas: {contador_vidas}", f"Puntaje: {contador_puntaje}"]
+        if doble_disparo_activo:
+            tiempo_restante = doble_disparo_timer // 60  # Convertir los frames a segundos
+            status.append(f"DOBLE DISPARO: {tiempo_restante}s")
+        
         for i in range(len(status)):
             texto = font_small.render(status[i], True, COLOR_VERDE)
             screen.blit(texto, (20, 20 + i * 35))
         
         # Debug con cuadrados - Hay que sacarlo en la version final!! 
-        dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas)
+        # dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas)
         
         pygame.display.flip()
         clock.tick(FPS)
@@ -584,3 +608,13 @@ def procesar_todas_las_colisiones(rect_jugador, balas, enemigos, atunes, milks):
         "enemigo_eliminado": colision_balas,
         "powerup": powerup_recolectado
     }
+
+
+def crear_doblebala(x,y):
+    """
+    Crea dos balas: una a la izquierda y otra a la derecha del jugador.
+    """
+    imagen_bala1, rect_bala1, velocidad_bala1 = crear_bala(x - 15, y)
+    imagen_bala2, rect_bala2, velocidad_bala2 = crear_bala(x + 15, y)
+    
+    return [(imagen_bala1, rect_bala1, velocidad_bala1), (imagen_bala2, rect_bala2, velocidad_bala2)]
