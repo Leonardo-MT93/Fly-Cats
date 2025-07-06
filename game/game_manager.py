@@ -101,7 +101,7 @@ def pantalla_menu_principal(screen, clock, imagen_fondo):
                     # Verificamos que el mouse colisione con los rectangulos
                     for i in range(len(rectangulos)):
                         rect = rectangulos[i]
-                        if rect.collidepoint(event.pos):
+                        if rect.collidepoint(event.pos): #colision del puntero con el rectangulo
                             opcion_seleccionada = i  # Cambiar a la opción clickeada
                             opcion_ejecutada = True  
                             break
@@ -146,7 +146,6 @@ def manejar_estado_menu_principal(screen, clock, imagenes):
                     return None, 0
             case _:
                     return ESTADO_MENU, 0
-        
 
 def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion=0):
     """Dibuja la pantalla de game over"""
@@ -318,7 +317,6 @@ def manejar_estado_juego(screen, clock, imagenes):
         case _:
             return ESTADO_JUEGO, 0
 
-
 def pantalla_intro(screen, clock, imagenes):
     tiempo_imagen = DURACION_INTRO
     font_skipear = pygame.font.Font(None, 26)
@@ -380,92 +378,209 @@ def manejar_estado_intro(screen, clock, imagenes):
             return ESTADO_MENU, 0
     
 def pantalla_juego(screen, clock, imagen_pantalla_juego):
-    """Pantalla de juego"""
+    """Pantalla de juego con estructura"""
+    
     font_small = pygame.font.Font(None, 32)
-
-    # Música de fondo
+    contador_vidas = 3
+    contador_puntaje = 0
+    
+    # Música y sonidos
     cargar_musica("assets/sounds/music/game_music.ogg")
     reproducir_musica(volumen=0.1)
-
-    # Sonido de disparo
     sonido_disparo = pygame.mixer.Sound(RUTA_SONIDO_DISPARO)
     sonido_disparo.set_volume(VOLUMEN_SONIDO_DISPARO)
-
-    # Crear jugador
+    
+    # Crear entidades
     imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
-
-    #Creamos listas de los enemigos y power ups que caeran
     enemigos = crear_objetos(crear_enemigo, 35)
     atunes = crear_objetos(crear_atun, 5)
     milks = crear_objetos(crear_milk, 3)
-
+    
     juego_activo = 1
     while juego_activo:
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "SALIR"
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    detener_musica()
-                    return "MENU"
-                elif event.key == pygame.K_5:
-                    detener_musica()
-                    return "GAME_OVER"
-
-        # Movimiento del jugador
+        
         keys = pygame.key.get_pressed()
         mover_jugador(rect_jugador, keys, screen.get_width(), screen.get_height(), velocidad_jugador)
-
-
+        
+        # Disparos
         if keys[pygame.K_SPACE]:
             if not disparar:
-                sonido_disparo.play()  #Sonido de disparo
+                sonido_disparo.play()
                 imagen_bala, rect_bala, velocidad_bala = crear_bala(rect_jugador.centerx, rect_jugador.top)
                 balas.append((imagen_bala, rect_bala, velocidad_bala))
                 disparar = True
         else:
             disparar = False
-
-        # Movimiento y limpieza de balas
+        
         for bala in balas[:]:
             imagen, rect, velocidad = bala
             mover_bala(rect, velocidad)
             if bala_fuera_de_pantalla(rect):
                 balas.remove(bala)
-
-        # Fondo de juego
-        screen.blit(imagen_pantalla_juego, (0, 0))
-
-        # Hacemos caer los enemigos y power ups, dibuja solo si están activas en pantalla
+        
+        # Actualizar enemigos
         for enemigo in enemigos:
             caer_objeto(enemigo)
-            if enemigo["activo"]:
-                screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
-
+        
+        # Actualizar power-ups
         for atun in atunes:
             caer_objeto(atun)
-            if atun["activo"]:
-                screen.blit(atun_escalada, (atun["x"], atun["y"]))
-
         for milk in milks:
             caer_objeto(milk)
+        
+        # Detecciion de colisiones
+        resultados_colision = procesar_todas_las_colisiones(
+            rect_jugador, balas, enemigos, atunes, milks
+        )
+        
+        if resultados_colision["jugador_golpeado"]:
+            contador_vidas -= 1
+        if resultados_colision["enemigo_eliminado"]:
+            contador_puntaje += 100
+        if resultados_colision["powerup"]:
+            if resultados_colision["powerup"] == "ATUN":
+                contador_puntaje += 500
+            elif resultados_colision["powerup"] == "MILK":
+                contador_vidas += 1
+        
+        # Verificar fin del juego
+        if contador_vidas <= 0:
+            detener_musica()
+            return "GAME_OVER"
+        
+        screen.blit(imagen_pantalla_juego, (0, 0))
+        
+        # Dibujar enemigos
+        for enemigo in enemigos:
+            if enemigo["activo"]:
+                screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
+        
+        # Dibujar powerups
+        for atun in atunes:
+            if atun["activo"]:
+                screen.blit(atun_escalada, (atun["x"], atun["y"]))
+        
+        for milk in milks:
             if milk["activo"]:
-                screen.blit(milk_escalada, (milk["x"], milk["y"]))            
-
-        # Dibujar jugador y balas
+                screen.blit(milk_escalada, (milk["x"], milk["y"]))
+        
+        # Dibujar jugador y las balas
         dibujar_jugador(screen, imagen_jugador, rect_jugador)
         for bala in balas:
             imagen, rect, _ = bala
             dibujar_bala(screen, imagen, rect)
 
-        # Instrucciones en pantalla
-        instrucciones = ["ESC - Volver al menú", "5 - Simular fin del juego"]
-        for i, instruccion in enumerate(instrucciones):
-            texto = font_small.render(instruccion, True, COLOR_VERDE)
+        status = [f"Vidas: {contador_vidas}", f"Puntaje: {contador_puntaje}"]
+        for i in range(len(status)):
+            texto = font_small.render(status[i], True, COLOR_VERDE)
             screen.blit(texto, (20, 20 + i * 35))
-
+        
+        # Debug con cuadrados - Hay que sacarlo en la version final!! 
+        dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas)
+        
         pygame.display.flip()
         clock.tick(FPS)
 
+def dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas):
+    """
+    Dibuja rectángulos para debug
+    - Jugador: Amarillo
+    - Enemigos: Rojo  
+    - Balas: Verde
+    """
+    pygame.draw.rect(screen, (255, 255, 0), rect_jugador, 3)
+    
+    for enemigo in enemigos:
+        if enemigo["activo"]:
+            rect_enemigo = pygame.Rect(enemigo["x"], enemigo["y"], 85, 85)
+            pygame.draw.rect(screen, (255, 0, 0), rect_enemigo, 3)
+    
+    for bala in balas:
+        if isinstance(bala, tuple) and len(bala) >= 2:
+            rect_bala = bala[1]
+            pygame.draw.rect(screen, (0, 255, 0), rect_bala, 3) 
+
+
+def detectar_colisiones_perros(rect_jugador, enemigos):
+    """
+    Detecta colisiones entre el jugador y los enemigos.
+    Retorna True si hay colisión, False en caso contrario.
+    """
+    for enemigo in enemigos[:]:  # Usar copia de la lista
+        if enemigo["activo"]:
+            rect_enemigo = pygame.Rect(enemigo["x"], enemigo["y"], 85, 85)
+            
+            if rect_jugador.colliderect(rect_enemigo):
+                enemigos.remove(enemigo)
+                print(f"Enemigos restantes: {len(enemigos)}")
+                return True
+    
+    return False
+
+def detectar_colision_balas(balas, enemigos):
+    """
+    Detecta colisiones entre balas y enemigos.
+    Elimina tanto las balas como los enemigos que colisionan.
+    """
+    for bala in balas[:]:  # Usar copia de la lista de balas
+        imagen_bala, rect_bala, velocidad_bala = bala
+        
+        for enemigo in enemigos[:]:  # Usar copia de la lista de enemigos
+            if enemigo["activo"]:
+                rect_enemigo = pygame.Rect(enemigo["x"], enemigo["y"], 85, 85)
+                
+                if rect_bala.colliderect(rect_enemigo):
+                    
+                    balas.remove(bala)
+                    enemigos.remove(enemigo)
+                    print(f"Enemigos restantes: {len(enemigos)}")
+                    
+                    return True
+    
+    return False
+
+def detectar_colision_jugador_powerups(rect_jugador, atunes, milks):
+    """
+    Detecta colisiones entre el jugador y power-ups.
+    Retorna el tipo de power-up recolectado o None.
+    """
+    for atun in atunes[:]:
+        if atun["activo"]:
+            rect_atun = pygame.Rect(atun["x"], atun["y"], 85, 85)
+            
+            if rect_jugador.colliderect(rect_atun):
+                atunes.remove(atun)
+                return "ATUN"
+    
+    for milk in milks[:]:
+        if milk["activo"]:
+            rect_milk = pygame.Rect(milk["x"], milk["y"], 85, 85)
+            
+            if rect_jugador.colliderect(rect_milk):
+                milks.remove(milk)
+                return "MILK"
+    
+    return None  # No hubo colisión con power-ups
+
+def procesar_todas_las_colisiones(rect_jugador, balas, enemigos, atunes, milks):
+    """
+    Función principal que maneja todas las colisiones del juego.
+    """
+    colision_jugador = detectar_colisiones_perros(rect_jugador, enemigos)
+    
+    colision_balas = detectar_colision_balas(balas, enemigos)
+    
+    powerup_recolectado = detectar_colision_jugador_powerups(rect_jugador, atunes, milks)
+    
+    # Retornar resultados para que el juego principal pueda saber que paso
+    return {
+        "jugador_golpeado": colision_jugador,
+        "enemigo_eliminado": colision_balas,
+        "powerup": powerup_recolectado
+    }

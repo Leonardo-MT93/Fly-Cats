@@ -33,7 +33,7 @@ VOLUMEN_GAME_OVER = 0.1
 VOLUMEN_MUSICA_INTRO = 0.3
 
 #Sonidos
-RUTA_SONIDO_DISPARO = "assets/sounds/music/disparo.ogg"
+RUTA_SONIDO_DISPARO = "assets/sounds/effects/disparo.ogg"
 VOLUMEN_SONIDO_DISPARO = 0.1
 
 #Puntuaciones
