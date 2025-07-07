@@ -5,7 +5,7 @@ from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
-from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada, crear_objetos, caer_objeto
+from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada, crear_objetos, caer_objeto, controlar_max_objetos_totales
 from game.powerups import crear_atun, crear_milk, atun_escalada, milk_escalada
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
@@ -403,11 +403,11 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
-    enemigos = crear_objetos(crear_enemigo, 35)
-    enemigos2 = [crear_objetos(crear_enemigo2, 10)] 
+    enemigos = crear_objetos(crear_enemigo, 90)
+    enemigos2 = [] 
     enemigos2_creados = False
-    atunes = crear_objetos(crear_atun, 5)
-    milks = crear_objetos(crear_milk, 3)
+    atunes = crear_objetos(crear_atun, 15)
+    milks = crear_objetos(crear_milk, 10)
 
     #Toma el tiempo al inicio del juego en milisegundos
     tiempo_inicio = pygame.time.get_ticks()  
@@ -468,29 +468,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         # Despues de 60 segundos aparecen enemigos con mas resistencia 
         if segundos_transcurridos > 60 and not enemigos2_creados:
             enemigos2 = crear_objetos(crear_enemigo2, 10) 
-            enemigos2_creados = True
-
-        # Actualizar enemigos
-        for enemigo in enemigos:
-            caer_objeto(enemigo)
-            if enemigo["activo"]:
-                screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
-
-        for enemigo2 in enemigos2:
-            caer_objeto(enemigo2)
-            if enemigo2["activo"]:
-                screen.blit(imagen_enemigo2_escalada, (enemigo2["x"], enemigo2["y"]))        
-        
-        # Actualizar power-ups
-        for atun in atunes:
-            caer_objeto(atun)
-            if atun["activo"]:
-                screen.blit(atun_escalada, (atun["x"], atun["y"]))   
-
-        for milk in milks:
-            caer_objeto(milk)
-            if milk["activo"]:
-                screen.blit(milk_escalada, (milk["x"], milk["y"]))   
+            enemigos2_creados = True   
         
         # Deteccion de colisiones
         resultados_colision = procesar_todas_las_colisiones(
@@ -522,20 +500,30 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             return "GAME_OVER", contador_puntaje
         
         screen.blit(imagen_pantalla_juego, (0, 0))
-        
-        # Dibujar enemigos
+
+        controlar_max_objetos_totales(enemigos, enemigos2, atunes, milks, segundos_transcurridos)
+       
+        # Actualizar enemigos
         for enemigo in enemigos:
+            caer_objeto(enemigo)
             if enemigo["activo"]:
                 screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
+
+        for enemigo2 in enemigos2:
+            caer_objeto(enemigo2)
+            if enemigo2["activo"]:
+                screen.blit(imagen_enemigo2_escalada, (enemigo2["x"], enemigo2["y"]))        
         
-        # Dibujar powerups
+        # Actualizar power-ups
         for atun in atunes:
+            caer_objeto(atun)
             if atun["activo"]:
-                screen.blit(atun_escalada, (atun["x"], atun["y"]))
-        
+                screen.blit(atun_escalada, (atun["x"], atun["y"]))   
+
         for milk in milks:
+            caer_objeto(milk)
             if milk["activo"]:
-                screen.blit(milk_escalada, (milk["x"], milk["y"]))
+                screen.blit(milk_escalada, (milk["x"], milk["y"]))        
         
         # Dibujar jugador con parpadeo
         tiempo_actual = pygame.time.get_ticks()

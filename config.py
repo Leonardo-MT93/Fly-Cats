@@ -39,6 +39,10 @@ RUTA_SONIDO_DISPARO = "assets/sounds/effects/disparo.ogg"
 VOLUMEN_SONIDO_DISPARO = 0.1
 RUTA_SONIDO_MAULLIDO_GATO = "assets/sounds/effects/maullido-gato.ogg"
 VOLUMEN_SONIDO_MAULLIDO_GATO = 0.4
+RUTA_SONIDO_MUERTE_PERRO = "assets/sounds/effects/Robot_muere.ogg"
+VOLUMEN_SONIDO_MUERTE_PERRO = 0.2
+RUTA_SONIDA_POWER_UP = "assets/sounds/effects/Power-up.ogg"
+VOLUMEN_SONIDO_POWER_UP = 0.1
 
 #Puntuaciones
 RUTA_CSV_PUNTUACIONES = "assets/puntuaciones.csv"

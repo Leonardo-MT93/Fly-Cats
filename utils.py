@@ -142,7 +142,7 @@ def obtener_nombre_jugador(screen, clock, imagen_fondo):
     contador_cursor = 0
 
     # Carga ed la imagen Record
-    imagen_record = pygame.image.load("assets/images/record.png")
+    imagen_record = pygame.image.load("assets/images/fondos/record.png")
     imagen_record = pygame.transform.scale(imagen_record, (SCREEN_WIDTH, SCREEN_HEIGHT))
     
     juego_activo = 1
