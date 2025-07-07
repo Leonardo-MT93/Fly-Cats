@@ -1,21 +1,19 @@
 # Archivo de configuraciones a cargo de Vish! 
 
-# Enemigos: Perro robot
+# Enemigos: Perro robot, perro robot 2 (mas dureza)
 
 import pygame
 import config
 import random
 #from game.powerups import crear_atun, crear_milk
 
-#alto = config.SCREEN_HEIGHT
+MAX_OBJETOS_EN_PANTALLA = 4
 imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perro_robot_cayendo.png")
 imagen_enemigo1_escalada = pygame.transform.scale(imagen_enemigo1, (85,85))
 imagen_enemigo2 = pygame.image.load("assets/images/enemies/Enemigo2.png")
 imagen_enemigo2_escalada = pygame.transform.scale(imagen_enemigo2, (105, 105))
 #enemigo_rect = imagen_enemigo1_escalada.get_rect()
 #enemigo_rect2 = imagen_enemigo2_escalada.get_rect()
-MAX_OBJETOS_EN_PANTALLA = 4
-
 
 def crear_enemigo() -> dict :
     """
