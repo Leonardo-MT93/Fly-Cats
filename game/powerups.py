@@ -21,7 +21,7 @@ def crear_atun():
     atun_creado = {
         "x": random.randint(0, config.SCREEN_WIDTH - 85),  # 85 ancho de la imagen
         "y": random.randint(-150, -50),  # Para que aparezcan en momentos distintos
-        "velocidad_y": random.randint(2, 5),
+        "velocidad_y": random.randint(2, 4),
         "activo": False,
         "tiempo_espera": random.randint(60, 3600)
     }
@@ -41,7 +41,7 @@ def crear_milk():
     milk_creada = {
         "x": random.randint(0, config.SCREEN_WIDTH - 85),  
         "y": random.randint(-150, -50), 
-        "velocidad_y": random.randint(2, 5),
+        "velocidad_y": random.randint(2, 4),
         "activo": False,
         "tiempo_espera": random.randint(60, 3600)
     }

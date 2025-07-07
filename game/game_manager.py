@@ -5,7 +5,7 @@ from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
-from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada, crear_objetos, caer_objeto, controlar_max_objetos_totales
+from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada, crear_objetos, caer_objeto, controlar_max_objetos_totales, contar_activos_total, MAX_OBJETOS_EN_PANTALLA
 from game.powerups import crear_atun, crear_milk, atun_escalada, milk_escalada
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
@@ -403,11 +403,11 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
-    enemigos = crear_objetos(crear_enemigo, 90)
+    enemigos = crear_objetos(crear_enemigo, 300)
     enemigos2 = [] 
     enemigos2_creados = False
-    atunes = crear_objetos(crear_atun, 15)
-    milks = crear_objetos(crear_milk, 10)
+    atunes = crear_objetos(crear_atun, 40)
+    milks = crear_objetos(crear_milk, 40)
 
     #Toma el tiempo al inicio del juego en milisegundos
     tiempo_inicio = pygame.time.get_ticks()  
@@ -431,7 +431,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         keys = pygame.key.get_pressed()
         mover_jugador(rect_jugador, keys, screen.get_width(), screen.get_height(), velocidad_jugador)
         
-        # Tiempo actual
+        #Tiempo transcurrido
         tiempo_actual = pygame.time.get_ticks()
         segundos_transcurridos = (tiempo_actual - tiempo_inicio) // 1000
         
@@ -500,9 +500,18 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             return "GAME_OVER", contador_puntaje
         
         screen.blit(imagen_pantalla_juego, (0, 0))
+        
+        controlar_max_objetos_totales([enemigos, enemigos2, atunes, milks], MAX_OBJETOS_EN_PANTALLA)
+        total_activos = contar_activos_total([enemigos, enemigos2, atunes, milks])
 
-        controlar_max_objetos_totales(enemigos, enemigos2, atunes, milks, segundos_transcurridos)
-       
+        if total_activos < MAX_OBJETOS_EN_PANTALLA:
+            # Solo si hay espacio, activamos nuevos objetos
+            for lista in [enemigos, enemigos2, atunes, milks]:
+                for objeto in lista:
+                    if not objeto["activo"] and objeto["tiempo_espera"] <= 0:
+                        objeto["activo"] = True
+                        break
+
         # Actualizar enemigos
         for enemigo in enemigos:
             caer_objeto(enemigo)

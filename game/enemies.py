@@ -5,16 +5,16 @@
 import pygame
 import config
 import random
-from game.powerups import crear_atun, crear_milk
+#from game.powerups import crear_atun, crear_milk
 
-alto = config.SCREEN_HEIGHT
+#alto = config.SCREEN_HEIGHT
 imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perro_robot_cayendo.png")
 imagen_enemigo1_escalada = pygame.transform.scale(imagen_enemigo1, (85,85))
 imagen_enemigo2 = pygame.image.load("assets/images/enemies/Enemigo2.png")
 imagen_enemigo2_escalada = pygame.transform.scale(imagen_enemigo2, (105, 105))
-enemigo_rect = imagen_enemigo1_escalada.get_rect()
-enemigo_rect2 = imagen_enemigo2_escalada.get_rect()
-
+#enemigo_rect = imagen_enemigo1_escalada.get_rect()
+#enemigo_rect2 = imagen_enemigo2_escalada.get_rect()
+MAX_OBJETOS_EN_PANTALLA = 4
 
 
 def crear_enemigo() -> dict :
@@ -25,7 +25,7 @@ def crear_enemigo() -> dict :
     enemigo_creado = {
         "x": random.randint(0, config.SCREEN_WIDTH - 85),  # 85 es el ancho de la imagen
         "y": random.randint(-500, -50),  # Para que aparezcan en momentos distintos
-        "velocidad_y": random.randint(3, 6),
+        "velocidad_y": random.randint(3, 5),
         "activo": False,
         "tiempo_espera": random.randint(60, 3600)
     }
@@ -36,7 +36,7 @@ def crear_enemigo2() -> dict :
     Crea los segundos enemigos, tiempo y velocidad distinta
     """
     enemigo_creado2 = {
-        "x": random.randint(0, config.SCREEN_WIDTH - 105),  # 85 es el ancho de la imagen
+        "x": random.randint(0, config.SCREEN_WIDTH - 105),  # 105 es el ancho de la imagen
         "y": random.randint(-500, -50),  # Para que aparezcan en momentos distintos
         "velocidad_y": 3,
         "activo": False,
@@ -60,8 +60,6 @@ def caer_objeto(objeto: dict):
     """
     if objeto["tiempo_espera"] > 0:
         objeto["tiempo_espera"] -= 1
-    else:
-        objeto["activo"] = True
 
     if objeto["activo"]:
         objeto["y"] += objeto["velocidad_y"]
@@ -70,45 +68,30 @@ def caer_objeto(objeto: dict):
         if objeto["y"] > config.SCREEN_HEIGHT:
             objeto["x"] = random.randint(0, config.SCREEN_WIDTH - 85)
             objeto["y"] = random.randint(-500, -50)
-            objeto["velocidad_y"] = random.randint(3, 6)  # o lo que corresponda
+            objeto["velocidad_y"] = random.randint(3, 5)  
             objeto["tiempo_espera"] = random.randint(60, 3600)
             objeto["activo"] = False
 
 def contar_activos_total(listas_objetos: list) -> int:
     """
-    Recibe listas de objetos (enemigos, power-ups, etc.)
-    y cuenta cuántos están activos.
+    Recibe múltiples listas de objetos y cuenta cuántos están activos.
     """
     total_activos = 0
     for lista in listas_objetos:
         for objeto in lista:
             if objeto["activo"]:
                 total_activos += 1
-    return total_activos         
+    return total_activos
 
-
-def controlar_max_objetos_totales(enemigos, enemigos2, atunes, milks, segundos_transcurridos):
+def controlar_max_objetos_totales(listas_objetos: list, max_objetos: int):
     """
-    Controla que haya un máximo de 5 objetos en pantalla.
+    Activa nuevos objetos (enemigos y power-ups) si hay menos de `max_objetos` en pantalla.
     """
-    todas_las_listas = [enemigos, enemigos2, atunes, milks]
-    total_activos = contar_activos_total(todas_las_listas)
+    total_activos = contar_activos_total(listas_objetos)
 
-    if total_activos < 5:
-        # Elegimos aleatoriamente qué tipo crear
-        opciones = [("enemigo", enemigos), ("atun", atunes), ("milk", milks)]
-
-        # Si pasaron más de 60 segundos, agregamos enemigo2
-        if segundos_transcurridos > 60:
-            opciones.append(("enemigo2", enemigos2))
-
-        tipo, lista = random.choice(opciones)
-
-        if tipo == "enemigo":
-            lista.append(crear_enemigo())
-        elif tipo == "enemigo2":
-            lista.append(crear_enemigo2())
-        elif tipo == "atun":
-            lista.append(crear_atun())
-        elif tipo == "milk":
-            lista.append(crear_milk())
+    if total_activos < max_objetos:
+        for lista in listas_objetos:
+            for objeto in lista:
+                if not objeto["activo"] and objeto["tiempo_espera"] <= 0:
+                    objeto["activo"] = True
+                    break
