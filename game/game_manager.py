@@ -724,8 +724,8 @@ def crear_doblebala(x,y):
 
 
 def pantalla_nuevo_record(screen, clock, imagen_record, puntuacion, nombre_jugador):    
-    # Reproducir música de game over (por ahora)
-    reproducir_musica_si_necesario(RUTA_MUSICA_GAME_OVER, VOLUMEN_GAME_OVER)
+    cargar_musica(RUTA_MUSICA_RECORD)
+    reproducir_musica(VOLUMEN_MUSICA_RECORD)
     
     opcion_seleccionada = 0
     contador_parpadeo = 0
@@ -1018,6 +1018,10 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     sonido_disparo.set_volume(VOLUMEN_SONIDO_DISPARO)
     sonido_maullido = pygame.mixer.Sound(RUTA_SONIDO_MAULLIDO_GATO)
     sonido_maullido.set_volume(VOLUMEN_SONIDO_MAULLIDO_GATO)
+    sonido_powerup = pygame.mixer.Sound(RUTA_SONIDA_POWER_UP)
+    sonido_powerup.set_volume(VOLUMEN_SONIDO_POWER_UP)
+    sonido_enemigo_muerto = pygame.mixer.Sound(RUTA_SONIDO_MUERTE_PERRO)
+    sonido_enemigo_muerto.set_volume(VOLUMEN_SONIDO_MUERTE_PERRO)
     
     # Crear entidades
     imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
@@ -1121,14 +1125,19 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             sonido_maullido.play()
 
         contador_puntaje += resultados_colision["puntos_ganados"]
+        if resultados_colision["puntos_ganados"] > 0:
+            sonido_enemigo_muerto.play()
 
         if resultados_colision["powerup"]:
-            if resultados_colision["powerup"] == "ATUN":
-                contador_puntaje += 500
-                doble_disparo_activo = True
-                doble_disparo_timer = 600
-            elif resultados_colision["powerup"] == "MILK":
-                contador_vidas += 1
+            sonido_powerup.play()
+
+        if resultados_colision["powerup"] == "ATUN":
+            contador_puntaje += 500
+            doble_disparo_activo = True
+            doble_disparo_timer = 600
+
+        elif resultados_colision["powerup"] == "MILK":
+            contador_vidas += 1
         
         if contador_vidas <= 0:
             detener_musica()
