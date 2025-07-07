@@ -30,19 +30,21 @@ RUTA_MUSICA_MENU = "assets/sounds/music/menu_music.ogg"
 RUTA_MUSICA_GAME_OVER = "assets/sounds/music/game_over_music.ogg"
 RUTA_MUSICA_GAME = "assets/sounds/music/game_music.ogg"
 RUTA_MUSICA_INTRO = "assets/sounds/music/musica_intro.ogg"
+RUTA_MUSICA_RECORD = "assets/sounds/music/record_music.ogg"
 VOLUMEN_MENU = 0.1
 VOLUMEN_GAME_OVER = 0.1
 VOLUMEN_MUSICA_INTRO = 0.3
+VOLUMEN_MUSICA_RECORD = 0.1
 
 #Sonidos
 RUTA_SONIDO_DISPARO = "assets/sounds/effects/disparo.ogg"
 VOLUMEN_SONIDO_DISPARO = 0.1
 RUTA_SONIDO_MAULLIDO_GATO = "assets/sounds/effects/maullido-gato.ogg"
 VOLUMEN_SONIDO_MAULLIDO_GATO = 0.4
-RUTA_SONIDO_MUERTE_PERRO = "assets/sounds/effects/Robot_muere.ogg"
-VOLUMEN_SONIDO_MUERTE_PERRO = 0.2
+RUTA_SONIDO_MUERTE_PERRO = "assets/sounds/effects/golpe-perro.ogg"
+VOLUMEN_SONIDO_MUERTE_PERRO = 0.1
 RUTA_SONIDA_POWER_UP = "assets/sounds/effects/Power-up.ogg"
-VOLUMEN_SONIDO_POWER_UP = 0.1
+VOLUMEN_SONIDO_POWER_UP = 0.4
 
 #Puntuaciones
 RUTA_CSV_PUNTUACIONES = "assets/puntuaciones.csv"
