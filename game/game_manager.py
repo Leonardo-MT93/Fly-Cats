@@ -5,8 +5,9 @@ from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
-from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada, crear_objetos, caer_objeto, controlar_max_objetos_totales, contar_activos_total, MAX_OBJETOS_EN_PANTALLA
+from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada
 from game.powerups import crear_atun, crear_milk, atun_escalada, milk_escalada
+from utils import crear_objetos, caer_objeto
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
@@ -191,13 +192,7 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
         y = y_start + i * 50
         #creacion de los rectangulos
         rect = pygame.Rect(x - 50 , y - 10, texto.get_width() + 100, texto.get_height() + 20)
-        rectangulos.append(rect)
-        # DIibujo test de cada rectangulo
-        # if i == opcion_seleccionada:
-        #     pygame.draw.rect(screen, (255, 255, 0), rect, 3)  # Amarillo para seleccionado
-        # else:
-        #     pygame.draw.rect(screen, (255, 0, 0), rect, 2)     # Rojo para no seleccionado
-        
+        rectangulos.append(rect)        
 
         if i == opcion_seleccionada:
             indicador = font_botones.render(">", True, COLOR_AMARILLO)
@@ -218,11 +213,8 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
     opcion_seleccionada = 0
     contador_parpadeo = 0
     
-    # Reproducir música de game over
     reproducir_musica_si_necesario(RUTA_MUSICA_GAME_OVER, VOLUMEN_GAME_OVER)
-    # cargar_musica("assets/sounds/music/game_over_music.ogg")
-    # reproducir_musica(volumen=0.1)
-    
+
     juego_activo = 1
     while juego_activo:
         pos_mouse = pygame.mouse.get_pos()
@@ -304,7 +296,7 @@ def manejar_estado_juego(screen, clock, imagenes):
         
         match estado:
             case "GAME_OVER":
-                # Verificar si el puntaje obtenido en el juego es un nuevorecord
+                # Verificar si el puntaje obtenido en el juego es un nuevo record
                 if es_nuevo_record(puntuacion):
                     return ESTADO_NUEVO_RECORD, puntuacion
                 else:
@@ -407,10 +399,11 @@ def gestionar_aparicion_optimizada(enemigos1, enemigos2, atunes, milks, timer_po
     
     # ✅ ACTIVACIÓN FORZADA DE ENEMIGOS: Asegurar que siempre haya enemigos
     enemigos1_activos = sum(1 for e in enemigos1 if e["activo"])
+    activar_enemigos(enemigos1, enemigos2, segundos)
     if enemigos1_activos < 6:  # Máximo 6 enemigos1
         forzar_activacion_enemigos(enemigos1, 6 - enemigos1_activos)
     
-    # ✅ ACTIVACIÓN FORZADA DE ENEMIGOS2 (después del minuto)
+   # ✅ ACTIVACIÓN FORZADA DE ENEMIGOS2 (después del minuto)
     if segundos >= 60:
         enemigos2_activos = sum(1 for e in enemigos2 if e["activo"])
         max_enemigos2 = min(4, (segundos - 60) // 30 + 1)  # Aumenta cada 30 seg
@@ -439,7 +432,6 @@ def reciclar_enemigos_infinitos(lista_enemigos):
             # Resetear vida para enemigos2
             if "vida" in enemigo:
                 enemigo["vida"] = 2
-            
 
 def forzar_activacion_enemigos(lista_enemigos, cantidad_necesaria):
     """Fuerza la activación de enemigos si no hay suficientes"""

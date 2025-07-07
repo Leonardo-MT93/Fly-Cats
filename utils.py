@@ -3,6 +3,7 @@ from config import *
 import pygame
 import csv
 import sys
+import random
 
 def cargar_imagen_fondo(ruta_imagen):
     """Carga y escala la imagen de fondo"""
@@ -368,3 +369,32 @@ def mostrar_modal_creditos(screen, clock, imagen_fondo):
         
         pygame.display.flip()
         clock.tick(FPS)
+
+# Funciones para la creacion y caida de enemigos y power ups 
+
+def crear_objetos (crear_funcion, cantidad:int) -> list :
+    """
+    Genera una lista (en este caso la usamos para enemigos y power ups)
+    """    
+    lista = []
+    for i in range(cantidad):
+        lista.append(crear_funcion())
+    return lista
+
+def caer_objeto(objeto: dict):
+    """
+    Se le pasa un diccionario, lo modifica y actualiza, de acuerdo al estado, tiempo y velocidad de aparicion
+    """
+    if objeto["tiempo_espera"] > 0:
+        objeto["tiempo_espera"] -= 1
+
+    if objeto["activo"]:
+        objeto["y"] += objeto["velocidad_y"]
+        
+        # Reiniciar para que vuelva a caer
+        if objeto["y"] > SCREEN_HEIGHT:
+            objeto["x"] = random.randint(0, SCREEN_WIDTH - 85)
+            objeto["y"] = random.randint(-500, -50)
+            objeto["velocidad_y"] = random.randint(3, 5)  
+            objeto["tiempo_espera"] = random.randint(60, 3600)
+            objeto["activo"] = False

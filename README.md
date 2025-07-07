@@ -1,6 +1,6 @@
 # TP Programación 1 - UTNFRA: 🐱 FLY CATS
 
-![Fly Cats Cover](assets/images/portada.png)
+![Fly Cats Cover](assets/images/fondos/portada.png)
 
 ## 🎮 Descripción
 
@@ -131,11 +131,11 @@ Este proyecto no debe tener los siguientes temas no visto en la cursada:
 - [x] Sistema de enemigos
 - [x] Sonidos y música
 - [x] Menú principal
-- [ ] Detección de colisiones
-- [ ] Sistema de power-ups
-- [ ] Aumento de dificultad al pasar el tiempo
-- [ ] Sistema de puntuaciones
-- [ ] Easter eggs de La Triada Salvaje
+- [x] Detección de colisiones
+- [x] Sistema de power-ups
+- [x] Aumento de dificultad al pasar el tiempo
+- [x] Sistema de puntuaciones
+- [x] Easter eggs de La Triada Salvaje
 
 ## 🤝 Contribuir
 

@@ -7,11 +7,9 @@ import random
 alto = config.SCREEN_HEIGHT
 atun = pygame.image.load("assets/images/power_ups/atun.png")
 atun_escalada = pygame.transform.scale(atun, (85, 85))
-atun_rect = atun_escalada.get_rect()
 
 milk = pygame.image.load("assets/images/power_ups/Milk power.png")
 milk_escalada = pygame.transform.scale(milk, (85, 85))
-milk_rect = milk_escalada.get_rect()
 
 
 def crear_atun():
