@@ -12,10 +12,10 @@ COLOR_GRIS = (180, 180, 180)
 COLOR_FONDO = (0, 0, 0)
 
 # Rutas de las imagenes
-RUTA_IMAGEN_FONDO_MENU_PRINCIPAL = "assets/images/portada.png"
-RUTA_IMAGEN_FIN_DEL_JUEGO = "assets/images/game_over.png"
-RUTA_IMAGEN_PANTALLA_JUEGO = "assets/images/pantalla_juego.png"
-RUTA_IMAGEN_NUEVO_RECORD = "assets/images/record.png"
+RUTA_IMAGEN_FONDO_MENU_PRINCIPAL = "assets/images/fondos/portada.png"
+RUTA_IMAGEN_FIN_DEL_JUEGO = "assets/images/fondos/game_over.png"
+RUTA_IMAGEN_PANTALLA_JUEGO = "assets/images/fondos/pantalla_juego.png"
+RUTA_IMAGEN_NUEVO_RECORD = "assets/images/fondos/record.png"
 RUTA_ICONO_JUEGO = "assets/images/icono.png"
 RUTA_IMAGEN_INTRO_1 = "assets/images/intro/intro01.png"
 RUTA_IMAGEN_INTRO_2 = "assets/images/intro/intro02.png" 
