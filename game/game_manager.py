@@ -2,7 +2,7 @@
 
 import pygame
 from config import *
-from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario
+from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
 from game.enemies import crear_enemigo, imagen_enemigo1_escalada, crear_objetos, caer_objeto
@@ -157,7 +157,6 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
     # Dibuja fondo (igual que el menú principal)
     screen.blit(imagen_fondo_final, (0, 0))
     
-    #Checklist: Puntuación final ficticio - falta implementar
     puntuacion_texto = font_subtitulo.render(f"Puntuación Final: {puntuacion}", True, COLOR_AMARILLO)
     punt_x = SCREEN_WIDTH // 2 - puntuacion_texto.get_width() // 2
     screen.blit(puntuacion_texto, (punt_x, 180))
@@ -246,7 +245,6 @@ def pantalla_game_over(screen, clock, imagen_fondo_final, puntuacion=0):
                     opcion_seleccionada = opcion_seleccionada + 1
                     if opcion_seleccionada >= len(OPCIONES_GAME_OVER):
                         opcion_seleccionada = 0
-                
                 elif event.key == pygame.K_RETURN:
                     opcion_ejecutada = True
             
@@ -297,25 +295,34 @@ def manejar_estado_gameover(screen, clock, imagenes, puntuacion):
             return ESTADO_MENU, 0
         case "SALIR":
             return None, 0
-  
-def procesar_puntuacion():
-    "procesa el puntaje obtenido"
 
 def manejar_estado_juego(screen, clock, imagenes):
     resultado = pantalla_juego(screen, clock, imagenes['fondos']['juego'])
 
-    match resultado:
-        case "MENU":
-            return ESTADO_MENU, 0
-        case "GAME_OVER":
-            #falta implementar logica de puntaje obtenido
-            # puntuacion, es_record = procesar_puntuacion() 
-            # return ESTADO_GAME_OVER, puntuacion
-            return ESTADO_GAME_OVER, 0
-        case "SALIR":
-            return None, 0
-        case _:
-            return ESTADO_JUEGO, 0
+    if type(resultado) == tuple:
+        estado, puntuacion = resultado
+        
+        match estado:
+            case "GAME_OVER":
+                # Verificar si el puntaje obtenido en el juego es un nuevorecord
+                if es_nuevo_record(puntuacion):
+                    return ESTADO_NUEVO_RECORD, puntuacion
+                else:
+                    return ESTADO_GAME_OVER, puntuacion
+            case "MENU":
+                return ESTADO_MENU, 0
+            case "SALIR":
+                return None, 0
+            case _:
+                return ESTADO_JUEGO, puntuacion
+    else:
+        match resultado:
+            case "MENU":
+                return ESTADO_MENU, 0
+            case "SALIR":
+                return None, 0
+            case _:
+                return ESTADO_JUEGO, 0
 
 def pantalla_intro(screen, clock, imagenes):
     tiempo_imagen = DURACION_INTRO
@@ -486,7 +493,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         # Verificar fin del juego
         if contador_vidas <= 0:
             detener_musica()
-            return "GAME_OVER"
+            return "GAME_OVER", contador_puntaje
         
         screen.blit(imagen_pantalla_juego, (0, 0))
         
@@ -643,3 +650,166 @@ def crear_doblebala(x,y):
     imagen_bala2, rect_bala2, velocidad_bala2 = crear_bala(x + 15, y)
     
     return [(imagen_bala1, rect_bala1, velocidad_bala1), (imagen_bala2, rect_bala2, velocidad_bala2)]
+
+
+def pantalla_nuevo_record(screen, clock, imagen_record, puntuacion, nombre_jugador):    
+    # Reproducir música de game over (por ahora)
+    reproducir_musica_si_necesario(RUTA_MUSICA_GAME_OVER, VOLUMEN_GAME_OVER)
+    
+    opcion_seleccionada = 0
+    contador_parpadeo = 0
+    
+    juego_activo = 1
+    while juego_activo:
+        pos_mouse = pygame.mouse.get_pos()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                detener_musica()
+                return "SALIR"
+            
+            opcion_ejecutada = False
+            
+            # Teclado
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    opcion_seleccionada = opcion_seleccionada - 1
+                    if opcion_seleccionada < 0:
+                        opcion_seleccionada = len(OPCIONES_RECORD) - 1
+                elif event.key == pygame.K_DOWN:
+                    opcion_seleccionada = opcion_seleccionada + 1
+                    if opcion_seleccionada >= len(OPCIONES_RECORD):
+                        opcion_seleccionada = 0
+                elif event.key == pygame.K_RETURN:
+                    opcion_ejecutada = True
+            # Mouse
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Click izquierdo
+                    rectangulos = dibujar_pantalla_nuevo_record(screen, OPCIONES_RECORD, opcion_seleccionada, contador_parpadeo, imagen_record, puntuacion, nombre_jugador)
+                    
+                    # Verificamos que el mouse colisione con los rectangulos
+                    for i in range(len(rectangulos)):
+                        rect = rectangulos[i]
+                        if rect.collidepoint(event.pos):
+                            opcion_seleccionada = i  # Cambiar a la opción clickeada
+                            opcion_ejecutada = True  
+                            break
+
+            
+            if opcion_ejecutada:
+                if OPCIONES_RECORD[opcion_seleccionada] in ["JUGAR OTRA VEZ", "SALIR"]:
+                    detener_musica()
+                return OPCIONES_RECORD[opcion_seleccionada]
+        
+        contador_parpadeo += 1
+        
+        screen.blit(imagen_record, (0, 0))
+        
+        # Overlay semi-transparente
+        # overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        # overlay.set_alpha(120)
+        # overlay.fill((0, 0, 0))
+        # screen.blit(overlay, (0, 0))
+        
+        # Efecto hover para el mouse
+        rectangulos = dibujar_pantalla_nuevo_record(screen, OPCIONES_RECORD, opcion_seleccionada, contador_parpadeo, imagen_record, puntuacion, nombre_jugador)
+        if rectangulos:
+            for i in range(len(rectangulos)):
+                rect = rectangulos[i]
+                if rect.collidepoint(pos_mouse):
+                    opcion_seleccionada = i
+                    break
+        pygame.display.flip()
+        clock.tick(FPS)
+
+def dibujar_pantalla_nuevo_record(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_record, puntuacion, nombre_jugador):
+    """Dibuja la pantalla de nuevo récord - VERSIÓN CON DEBUG"""
+    font_subtitulo = pygame.font.Font(None, 48)
+    font_botones = pygame.font.Font(None, 36)
+    font_small = pygame.font.Font(None, 28)
+
+    screen.blit(imagen_record, (0, 0))
+    
+
+    # Mostrar nombre y puntuación
+    texto_jugador = font_subtitulo.render(f"Piloto: {nombre_jugador}", True, COLOR_VERDE)
+    jugador_x = SCREEN_WIDTH // 2 - texto_jugador.get_width() // 2
+    screen.blit(texto_jugador, (jugador_x, 160))
+    
+    texto_puntaje = font_subtitulo.render(f"Puntuación Final: {puntuacion}", True, COLOR_BLANCO)
+    puntaje_x = SCREEN_WIDTH // 2 - texto_puntaje.get_width() // 2
+    screen.blit(texto_puntaje, (puntaje_x, 200))
+    
+    # Mensaje de felicitación
+    mensaje = "¡Eres el mejor defensor del planeta!"
+    texto_mensaje = font_small.render(mensaje, True, COLOR_GRIS)
+    mensaje_x = SCREEN_WIDTH // 2 - texto_mensaje.get_width() // 2
+    screen.blit(texto_mensaje, (mensaje_x, 250))
+
+    # Opciones del menú
+    y_start = 320
+    rectangulos = []
+    
+    for i in range(len(opciones)):
+        opcion = opciones[i]
+        
+        
+        # Parpadeo de la opción seleccionada
+        if i == opcion_seleccionada:
+            if contador_parpadeo % 30 < 15:
+                color = COLOR_AMARILLO
+            else:
+                color = COLOR_BLANCO
+        else:
+            color = COLOR_BLANCO
+
+        texto = font_botones.render(opcion, True, color)
+        x = SCREEN_WIDTH // 2 - texto.get_width() // 2
+        y = y_start + i * 50
+        
+
+        rect = pygame.Rect(x - 50, y - 10, texto.get_width() + 100, texto.get_height() + 20)
+        rectangulos.append(rect)
+        
+        if i == opcion_seleccionada:
+            indicador = font_botones.render(">", True, COLOR_AMARILLO)
+            screen.blit(indicador, (x - 40, y))
+        
+        screen.blit(texto, (x, y))
+
+    return rectangulos
+
+def manejar_estado_nuevo_record(screen, clock, imagenes, puntuacion):
+    """Maneja el estado de nuevo récord - PANTALLA FINAL"""
+    
+    nombre_jugador = pantalla_nuevo_record_solo_guardar(screen, clock, imagenes['fondos']['victoria'], puntuacion)
+    
+    salir = False
+    while not salir:
+        resultado = pantalla_nuevo_record(screen, clock, imagenes['fondos']['victoria'], puntuacion, nombre_jugador)
+        
+        match resultado:
+            case "JUGAR OTRA VEZ":
+                return ESTADO_JUEGO, 0
+            case "RANKING":
+                resultado_ranking = mostrar_modal_puntuaciones(screen, clock, imagenes['fondos']['victoria'])
+                if resultado_ranking == "SALIR":
+                    return None, 0
+                continue
+            case "MENU PRINCIPAL":
+                return ESTADO_MENU, 0
+            case "SALIR":
+                return None, 0
+            case _:
+                return ESTADO_MENU, 0
+        
+def pantalla_nuevo_record_solo_guardar(screen, clock, imagen_record, puntuacion):
+    """SOLO pide nombre y guarda - se ejecuta UNA VEZ"""
+    
+    # Obtener nombre del jugador
+    nombre_jugador = obtener_nombre_jugador(screen, clock, imagen_record)
+    
+    # Guardar la puntuación en el CSV
+    agregar_puntuacion_csv(nombre_jugador, puntuacion)
+        
+    return nombre_jugador 

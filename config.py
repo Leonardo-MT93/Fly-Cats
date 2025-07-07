@@ -15,11 +15,13 @@ COLOR_FONDO = (0, 0, 0)
 RUTA_IMAGEN_FONDO_MENU_PRINCIPAL = "assets/images/portada.png"
 RUTA_IMAGEN_FIN_DEL_JUEGO = "assets/images/game_over.png"
 RUTA_IMAGEN_PANTALLA_JUEGO = "assets/images/pantalla_juego.png"
+RUTA_IMAGEN_NUEVO_RECORD = "assets/images/record.png"
 RUTA_ICONO_JUEGO = "assets/images/icono.png"
 RUTA_IMAGEN_INTRO_1 = "assets/images/intro/intro01.png"
 RUTA_IMAGEN_INTRO_2 = "assets/images/intro/intro02.png" 
 RUTA_IMAGEN_INTRO_3 = "assets/images/intro/intro03.png"
 RUTA_IMAGEN_INTRO_4 = "assets/images/intro/intro04.png"
+
 
 DURACION_INTRO = 5000  
 
@@ -47,9 +49,11 @@ TITULO_JUEGO = "Fly Cats"
 #Opciones de menus
 OPCIONES_MENU_PRINCIPAL = ["JUGAR", "RANKING", "CREDITOS", "SALIR"]
 OPCIONES_GAME_OVER = ["REINTENTAR", "RANKING", "SALIR"]
+OPCIONES_RECORD = ["JUGAR OTRA VEZ", "RANKING", "SALIR"]
 
 #estados del juego
 ESTADO_INTRO = "INTRO"
 ESTADO_MENU = "MENU"
 ESTADO_JUEGO = "JUEGO"
 ESTADO_GAME_OVER = "GAME_OVER"
+ESTADO_NUEVO_RECORD = "NUEVO_RECORD"

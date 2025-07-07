@@ -34,7 +34,7 @@ def cargar_todas_las_imagenes():
             'menu': cargar_imagen_fondo(RUTA_IMAGEN_FONDO_MENU_PRINCIPAL),
             'game_over': cargar_imagen_fondo(RUTA_IMAGEN_FIN_DEL_JUEGO),
             'juego': cargar_imagen_fondo(RUTA_IMAGEN_PANTALLA_JUEGO),
-            # 'victoria': cargar_imagen_fondo("assets/images/victoria.png") falta implementar imagen
+            'victoria': cargar_imagen_fondo(RUTA_IMAGEN_NUEVO_RECORD),
         },
         'sprites': {
             # falta implementar imagenes de los sprites

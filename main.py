@@ -19,7 +19,8 @@ def main():
             
         elif estado_actual == ESTADO_JUEGO:
             estado_actual, puntuacion_actual = manejar_estado_juego(screen, clock, imagenes)
-            
+        elif estado_actual == ESTADO_NUEVO_RECORD:
+            estado_actual, puntuacion_actual = manejar_estado_nuevo_record(screen, clock, imagenes, puntuacion_actual)
         elif estado_actual == ESTADO_GAME_OVER:
             estado_actual, puntuacion_actual = manejar_estado_gameover(screen, clock, imagenes, puntuacion_actual)
         
