@@ -5,7 +5,7 @@ from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
-from game.enemies import crear_enemigo, imagen_enemigo1_escalada, crear_objetos, caer_objeto
+from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada, crear_objetos, caer_objeto
 from game.powerups import crear_atun, crear_milk, atun_escalada, milk_escalada
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
@@ -397,8 +397,13 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     balas = []
     disparar = False
     enemigos = crear_objetos(crear_enemigo, 35)
+    enemigos2 = [crear_objetos(crear_enemigo2, 10)] 
+    enemigos2_creados = False
     atunes = crear_objetos(crear_atun, 5)
     milks = crear_objetos(crear_milk, 3)
+
+    #Toma el tiempo al inicio del juego en milisegundos
+    tiempo_inicio = pygame.time.get_ticks()  
     
     doble_disparo_activo = False
     doble_disparo_timer = 0
@@ -418,6 +423,10 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         
         keys = pygame.key.get_pressed()
         mover_jugador(rect_jugador, keys, screen.get_width(), screen.get_height(), velocidad_jugador)
+        
+        # Tiempo actual
+        tiempo_actual = pygame.time.get_ticks()
+        segundos_transcurridos = (tiempo_actual - tiempo_inicio) // 1000
         
         # Disparos
         if keys[pygame.K_SPACE]:
@@ -449,15 +458,32 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             if bala_fuera_de_pantalla(rect):
                 balas.remove(bala)
         
+        # Despues de 60 segundos aparecen enemigos con mas resistencia 
+        if segundos_transcurridos > 60 and not enemigos2_creados:
+            enemigos2 = crear_objetos(crear_enemigo2, 10) 
+            enemigos2_creados = True
+
         # Actualizar enemigos
         for enemigo in enemigos:
             caer_objeto(enemigo)
+            if enemigo["activo"]:
+                screen.blit(imagen_enemigo1_escalada, (enemigo["x"], enemigo["y"]))
+
+        for enemigo2 in enemigos2:
+            caer_objeto(enemigo2)
+            if enemigo2["activo"]:
+                screen.blit(imagen_enemigo2_escalada, (enemigo2["x"], enemigo2["y"]))        
         
         # Actualizar power-ups
         for atun in atunes:
             caer_objeto(atun)
+            if atun["activo"]:
+                screen.blit(atun_escalada, (atun["x"], atun["y"]))   
+
         for milk in milks:
             caer_objeto(milk)
+            if milk["activo"]:
+                screen.blit(milk_escalada, (milk["x"], milk["y"]))   
         
         # Deteccion de colisiones
         resultados_colision = procesar_todas_las_colisiones(
