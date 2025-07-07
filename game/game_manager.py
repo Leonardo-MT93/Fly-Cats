@@ -8,6 +8,28 @@ from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pant
 from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada, crear_objetos, caer_objeto, controlar_max_objetos_totales, contar_activos_total, MAX_OBJETOS_EN_PANTALLA
 from game.powerups import crear_atun, crear_milk, atun_escalada, milk_escalada
 
+def verificar_enemigos_en_piso(enemigos1, enemigos2, contador_puntaje):
+    """
+    Verifica si algún enemigo cayó al piso y aplica penalización
+    Retorna: puntos perdidos
+    """
+    puntos_perdidos = 0
+    limite_piso = SCREEN_HEIGHT - 10  # Un poco antes del borde para mejor detección
+    
+    #VERIFICAR ENEMIGOS1
+    for enemigo in enemigos1[:]:  # Usar copia para poder modificar la lista
+        if enemigo["activo"] and enemigo["y"] >= limite_piso:
+            puntos_perdidos += 100
+            enemigo["activo"] = False  # Desactivar el enemigo
+    
+    #VERIFICAR ENEMIGOS2
+    for enemigo2 in enemigos2[:]:
+        if enemigo2["activo"] and enemigo2["y"] >= limite_piso:
+            puntos_perdidos += 250  # Más puntos porque son más peligrosos
+            enemigo2["activo"] = False
+    
+    return puntos_perdidos
+
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
     font_botones = pygame.font.Font(None, 48)
@@ -986,7 +1008,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     """Pantalla de juego con enemigos continuos infinitos"""
     
     font_small = pygame.font.Font(None, 32)
-    contador_vidas = 3
+    contador_vidas = 7
     contador_puntaje = 0
     
     # Música y sonidos (sin cambios)
@@ -1071,6 +1093,13 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             timer_powerups, segundos_transcurridos
         )
         timer_powerups += 1
+
+        # 🆕 VERIFICAR ENEMIGOS QUE TOCAN EL PISO Y APLICAR PENALIZACIÓN
+        puntos_perdidos = verificar_enemigos_en_piso(enemigos1, enemigos2, contador_puntaje)
+        contador_puntaje -= puntos_perdidos
+
+        if contador_puntaje < 0:
+            contador_puntaje = 0
         
         # ✅ COLISIONES: Solo usar enemigos según la fase
         if segundos_transcurridos < 60:

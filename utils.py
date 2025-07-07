@@ -49,8 +49,6 @@ def finalizar_juego():
     pygame.quit()
     sys.exit()
 
-
-
 # Musica del juego
 
 def cargar_musica(ruta_musica):
@@ -121,15 +119,14 @@ def es_nuevo_record(puntuacion, archivo="assets/puntuaciones.csv"):
     """Verifica si la puntuación es un nuevo récord"""
     puntuaciones = leer_puntuaciones_csv(archivo)
     
-    # Si no hay puntuaciones, cualquier puntaje obtenido es récord
     if not puntuaciones:
         return True
     
-    # Obtener la puntuación más alta
-    mejor_puntuacion = puntuaciones[0][1]
+    if len(puntuaciones) < 5:
+        return True
     
-    # Verificamos si la puntuacion obtenida es mayor
-    return puntuacion > mejor_puntuacion
+    quinta_mejor_puntuacion = puntuaciones[4][1]  # 5to lugar
+    return puntuacion > quinta_mejor_puntuacion
 
 def obtener_nombre_jugador(screen, clock, imagen_fondo):
     """Modal para ingresar el nombre del jugador con mayor puntuacion obtenida"""

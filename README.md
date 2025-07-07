@@ -131,10 +131,10 @@ Este proyecto no debe tener los siguientes temas no visto en la cursada:
 - [x] Sistema de enemigos
 - [x] Sonidos y música
 - [x] Menú principal
-- [ ] Detección de colisiones
-- [ ] Sistema de power-ups
-- [ ] Aumento de dificultad al pasar el tiempo
-- [ ] Sistema de puntuaciones
+- [x] Detección de colisiones
+- [x] Sistema de power-ups
+- [x] Aumento de dificultad al pasar el tiempo
+- [x] Sistema de puntuaciones
 - [ ] Easter eggs de La Triada Salvaje
 
 ## 🤝 Contribuir
