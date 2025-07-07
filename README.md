@@ -1,6 +1,6 @@
 # TP Programación 1 - UTNFRA: 🐱 FLY CATS
 
-![Fly Cats Cover](assets/images/portada.png)
+![Fly Cats Cover](assets/images/fondos/portada.png)
 
 ## 🎮 Descripción
 

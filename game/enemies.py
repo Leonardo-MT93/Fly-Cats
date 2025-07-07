@@ -5,15 +5,11 @@
 import pygame
 import config
 import random
-#from game.powerups import crear_atun, crear_milk
 
-MAX_OBJETOS_EN_PANTALLA = 4
 imagen_enemigo1 = pygame.image.load("assets/images/enemies/Perro_robot_cayendo.png")
 imagen_enemigo1_escalada = pygame.transform.scale(imagen_enemigo1, (85,85))
 imagen_enemigo2 = pygame.image.load("assets/images/enemies/Enemigo2.png")
 imagen_enemigo2_escalada = pygame.transform.scale(imagen_enemigo2, (105, 105))
-#enemigo_rect = imagen_enemigo1_escalada.get_rect()
-#enemigo_rect2 = imagen_enemigo2_escalada.get_rect()
 
 def crear_enemigo() -> dict :
     """
@@ -40,56 +36,4 @@ def crear_enemigo2() -> dict :
         "activo": False,
         "tiempo_espera": random.randint(60, 3600)
     }
-    return enemigo_creado2
-
-
-def crear_objetos (crear_funcion, cantidad:int) -> list :
-    """
-    Genera una lista (en este caso la usamos para enemigos y power ups)
-    """    
-    lista = []
-    for i in range(cantidad):
-        lista.append(crear_funcion())
-    return lista
-
-def caer_objeto(objeto: dict):
-    """
-    Se le pasa un diccionario, lo modifica y actualiza, de acuerdo al estado, tiempo y velocidad de aparicion
-    """
-    if objeto["tiempo_espera"] > 0:
-        objeto["tiempo_espera"] -= 1
-
-    if objeto["activo"]:
-        objeto["y"] += objeto["velocidad_y"]
-        
-        # Reiniciar para que vuelva a caer
-        if objeto["y"] > config.SCREEN_HEIGHT:
-            objeto["x"] = random.randint(0, config.SCREEN_WIDTH - 85)
-            objeto["y"] = random.randint(-500, -50)
-            objeto["velocidad_y"] = random.randint(3, 5)  
-            objeto["tiempo_espera"] = random.randint(60, 3600)
-            objeto["activo"] = False
-
-def contar_activos_total(listas_objetos: list) -> int:
-    """
-    Recibe múltiples listas de objetos y cuenta cuántos están activos.
-    """
-    total_activos = 0
-    for lista in listas_objetos:
-        for objeto in lista:
-            if objeto["activo"]:
-                total_activos += 1
-    return total_activos
-
-def controlar_max_objetos_totales(listas_objetos: list, max_objetos: int):
-    """
-    Activa nuevos objetos (enemigos y power-ups) si hay menos de `max_objetos` en pantalla.
-    """
-    total_activos = contar_activos_total(listas_objetos)
-
-    if total_activos < max_objetos:
-        for lista in listas_objetos:
-            for objeto in lista:
-                if not objeto["activo"] and objeto["tiempo_espera"] <= 0:
-                    objeto["activo"] = True
-                    break
+    return enemigo_creado2          
