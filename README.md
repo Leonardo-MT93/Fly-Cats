@@ -34,15 +34,15 @@
 - **LinkedIn:** [linkedin.com/in/agostina-ramos-7a38b8373](https://www.linkedin.com/in/agostina-ramos-7a38b8373/)
 - **GitHub:** [@agosramos299](https://github.com/agosramos299)
 
-### 🐅 Vish (Tigre Blanco) - AI & Game Balance
+### 🐅 Vish (Tigre Blanco) - Enemies & Game Balance
 - **Espíritu Animal:** Tigre Blanco - Cazadora misteriosa y letal
 - **Poderes:** Instinto depredador, precisión felina en cada línea de código
 - **Responsabilidades:** 
-  - IA de enemigos y patrones de comportamiento
+  - Sistema de enemigos y patrones de movimiento
   - Sistema de power-ups y balanceado
   - Escalado de dificultad dinámico
   - Sistema de colisiones avanzado
-  - Optimización de rendimiento
+  - Optimización de rendimiento y reciclaje de objetos
 - **Email:** [visnupriya.b@live.com.ar](mailto:visnupriya.b@live.com.ar)
 - **LinkedIn:** [linkedin.com/in/visnupriya-blanco/](https://www.linkedin.com/in/visnupriya-blanco/)
 - **GitHub:** [@visnupriyab](https://github.com/visnupriyab)
