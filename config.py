@@ -10,6 +10,7 @@ COLOR_BLANCO = (255, 255, 255)
 COLOR_AMARILLO = (255, 255, 0)
 COLOR_GRIS = (180, 180, 180)
 COLOR_FONDO = (0, 0, 0)
+COLOR_ROJO = (255, 0, 0)
 
 # Rutas de las imagenes
 RUTA_IMAGEN_FONDO_MENU_PRINCIPAL = "assets/images/fondos/portada.png"

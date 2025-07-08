@@ -20,21 +20,20 @@ def verificar_enemigos_en_piso(enemigos1, enemigos2, contador_puntaje):
     #VERIFICAR ENEMIGOS1
     for enemigo in enemigos1[:]:  # Usar copia para poder modificar la lista
         if enemigo["activo"] and enemigo["y"] >= limite_piso:
-            puntos_perdidos += 100
+            puntos_perdidos += 150
             enemigo["activo"] = False  # Desactivar el enemigo
     
     #VERIFICAR ENEMIGOS2
     for enemigo2 in enemigos2[:]:
         if enemigo2["activo"] and enemigo2["y"] >= limite_piso:
-            puntos_perdidos += 250  # Más puntos porque son más peligrosos
+            puntos_perdidos += 1000  # Más puntos porque son más peligrosos
             enemigo2["activo"] = False
     
     return puntos_perdidos
 
 def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo):
     """Dibuja el menú principal del juego"""
-    font_botones = pygame.font.Font(None, 48)
-    font_small = pygame.font.Font(None, 28)
+    font_botones = pygame.font.SysFont("impact", 48)
     
     # Dibujar fondo
     screen.blit(imagen_fondo, (0, 0))
@@ -71,12 +70,6 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
             screen.blit(indicador, (x - 50, y))
         
         screen.blit(texto, (x, y))
-    
-    # Instrucciones para que el usuario sepa cómo navegar en el juego..
-    instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
-                                   True, COLOR_VERDE)
-    instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
-    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30))
 
     return rectangulos #Aca devolvemos los rectangulos para poder  usarlos en el evento del mouse
 
@@ -173,7 +166,7 @@ def manejar_estado_menu_principal(screen, clock, imagenes):
 def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_fondo_final, puntuacion=0):
     """Dibuja la pantalla de game over"""
     font_subtitulo = pygame.font.Font(None, 48)
-    font_botones = pygame.font.Font(None, 36)
+    font_botones = pygame.font.SysFont("impact", 36)
     font_small = pygame.font.Font(None, 28)
 
     
@@ -223,10 +216,10 @@ def dibujar_game_over(screen, opciones, opcion_seleccionada, contador_parpadeo, 
         screen.blit(texto, (x, y))
     
     # Instrucciones PARA navegar en el menu 
-    instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
-                                   True, COLOR_VERDE)
-    instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
-    screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30))
+    # instruccion = font_small.render("Usa UP/DOWN para navegar, ENTER para seleccionar", 
+    #                                True, COLOR_VERDE)
+    # instr_x = SCREEN_WIDTH // 2 - instruccion.get_width() // 2
+    # screen.blit(instruccion, (instr_x, SCREEN_HEIGHT - 30))
 
     return rectangulos
 
@@ -403,12 +396,12 @@ def gestionar_aparicion_optimizada(enemigos1, enemigos2, atunes, milks, timer_po
     """Gestión optimizada con reciclaje infinito de enemigos"""
     import random
     
-    # ✅ RECICLAJE DE ENEMIGOS: Reactivar enemigos que salieron de pantalla
+    # RECICLAJE DE ENEMIGOS: Reactivar enemigos que salieron de pantalla
     reciclar_enemigos_infinitos(enemigos1)
     if segundos >= 60:
         reciclar_enemigos_infinitos(enemigos2)
     
-    # ✅ CONTROL DE POWER-UPS: Máximo 2 en pantalla, cada 5 segundos
+    # CONTROL DE POWER-UPS: Máximo 2 en pantalla, cada 5 segundos
     powerups_activos = sum(1 for atun in atunes if atun["activo"]) + \
                        sum(1 for milk in milks if milk["activo"])
     
@@ -419,12 +412,12 @@ def gestionar_aparicion_optimizada(enemigos1, enemigos2, atunes, milks, timer_po
             else:
                 activar_objeto_aleatorio(milks, "🥛 MILK")
     
-    # ✅ ACTIVACIÓN FORZADA DE ENEMIGOS: Asegurar que siempre haya enemigos
+    # ACTIVACIÓN FORZADA DE ENEMIGOS: Asegurar que siempre haya enemigos
     enemigos1_activos = sum(1 for e in enemigos1 if e["activo"])
     if enemigos1_activos < 6:  # Máximo 6 enemigos1
         forzar_activacion_enemigos(enemigos1, 6 - enemigos1_activos)
     
-   # ✅ ACTIVACIÓN FORZADA DE ENEMIGOS2 (después del minuto)
+   # ACTIVACIÓN FORZADA DE ENEMIGOS2 (después del minuto)
     if segundos >= 60:
         enemigos2_activos = sum(1 for e in enemigos2 if e["activo"])
         max_enemigos2 = min(4, (segundos - 60) // 30 + 1)  # Aumenta cada 30 seg
@@ -444,7 +437,7 @@ def reciclar_enemigos_infinitos(lista_enemigos):
     for enemigo in lista_enemigos:
         # Si el enemigo está inactivo y salió de pantalla, reciclarlo
         if not enemigo["activo"] and enemigo["y"] > SCREEN_HEIGHT + 100:
-            # ✅ RESETEAR ENEMIGO para reutilizarlo
+            # RESETEAR ENEMIGO para reutilizarlo
             enemigo["x"] = random.randint(0, SCREEN_WIDTH - 85)
             enemigo["y"] = random.randint(-300, -50)
             enemigo["velocidad_y"] = random.randint(3, 6)
@@ -465,7 +458,7 @@ def forzar_activacion_enemigos(lista_enemigos, cantidad_necesaria):
     while activados < cantidad_necesaria and intentos < max_intentos:
         for enemigo in lista_enemigos:
             if not enemigo["activo"]:
-                # ✅ ACTIVAR INMEDIATAMENTE sin esperar tiempo_espera
+                # ACTIVAR INMEDIATAMENTE sin esperar tiempo_espera
                 enemigo["activo"] = True
                 enemigo["tiempo_espera"] = 0
                 
@@ -567,7 +560,7 @@ def detectar_colision_balas_vs_enemigos2(balas, enemigos2):
                 if rect_bala.colliderect(rect_enemigo):
                     balas.remove(bala)
                     
-                    # ✅ LÓGICA DE 2 DISPAROS
+                    # LÓGICA DE 2 DISPAROS
                     if "vida" not in enemigo2:
                         enemigo2["vida"] = 2  # Inicializar vida
                     
@@ -585,46 +578,53 @@ def detectar_colision_balas_vs_enemigos2(balas, enemigos2):
     
     return puntos
 
-def dibujar_ui_optimizada(screen, font, vidas, puntaje, doble_disparo_activo, doble_disparo_timer, segundos):
-    """Dibuja UI con información de dificultad"""
+def dibujar_ui_optimizada(screen, font, vidas, puntaje, doble_disparo_activo, doble_disparo_timer, segundos, icono_doble_disparo=None):
     status = [
-        f"Vidas: {vidas}", 
+        f"Vidas: {vidas}",
         f"Puntaje: {puntaje}",
         f"Tiempo: {segundos}s"
     ]
-    
-    if doble_disparo_activo:
-        tiempo_restante = doble_disparo_timer // 60
-        status.append(f"🔥 DOBLE DISPARO: {tiempo_restante}s")
-    
-    if segundos >= 60:
-        status.append("🤖 MODO DIFÍCIL ACTIVADO")
     
     for i in range(len(status)):
         color = COLOR_VERDE if i < 3 else COLOR_AMARILLO
         texto = font.render(status[i], True, color)
         screen.blit(texto, (20, 20 + i * 35))
-
-# VIEJAS FUNCIONES
-
-def dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas):
-    """
-    Dibuja rectángulos para debug
-    - Jugador: Amarillo
-    - Enemigos: Rojo  
-    - Balas: Verde
-    """
-    pygame.draw.rect(screen, (255, 255, 0), rect_jugador, 3)
     
-    for enemigo in enemigos:
-        if enemigo["activo"]:
-            rect_enemigo = pygame.Rect(enemigo["x"], enemigo["y"], 85, 85)
-            pygame.draw.rect(screen, (255, 0, 0), rect_enemigo, 3)
+    y_siguiente = 20 + len(status) * 35
     
-    for bala in balas:
-        if isinstance(bala, tuple) and len(bala) >= 2:
-            rect_bala = bala[1]
-            pygame.draw.rect(screen, (0, 255, 0), rect_bala, 3) 
+    if doble_disparo_activo:
+        tiempo_restante = doble_disparo_timer // 60
+        
+        if icono_doble_disparo:
+            screen.blit(icono_doble_disparo, (20, y_siguiente))
+        
+        texto_doble = font.render(f" DOBLE DISPARO: {tiempo_restante}s", True, COLOR_AMARILLO)
+        screen.blit(texto_doble, (35, y_siguiente))
+        y_siguiente += 35
+    
+    # MENSAJE DE MODO DIFÍCIL (siempre debajo del power-up si existe)
+    if segundos >= 60:
+        texto_dificil = font.render("MODO DIFÍCIL ACTIVADO", True, COLOR_ROJO)
+        screen.blit(texto_dificil, (20, y_siguiente))
+
+# def dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas):
+#     """
+#     Dibuja rectángulos para debug
+#     - Jugador: Amarillo
+#     - Enemigos: Rojo  
+#     - Balas: Verde
+#     """
+#     pygame.draw.rect(screen, (255, 255, 0), rect_jugador, 3)
+    
+#     for enemigo in enemigos:
+#         if enemigo["activo"]:
+#             rect_enemigo = pygame.Rect(enemigo["x"], enemigo["y"], 85, 85)
+#             pygame.draw.rect(screen, (255, 0, 0), rect_enemigo, 3)
+    
+#     for bala in balas:
+#         if isinstance(bala, tuple) and len(bala) >= 2:
+#             rect_bala = bala[1]
+#             pygame.draw.rect(screen, (0, 255, 0), rect_bala, 3) 
 
 
 def detectar_colisiones_perros(rect_jugador, enemigos):
@@ -767,12 +767,6 @@ def pantalla_nuevo_record(screen, clock, imagen_record, puntuacion, nombre_jugad
         
         screen.blit(imagen_record, (0, 0))
         
-        # Overlay semi-transparente
-        # overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        # overlay.set_alpha(120)
-        # overlay.fill((0, 0, 0))
-        # screen.blit(overlay, (0, 0))
-        
         # Efecto hover para el mouse
         rectangulos = dibujar_pantalla_nuevo_record(screen, OPCIONES_RECORD, opcion_seleccionada, contador_parpadeo, imagen_record, puntuacion, nombre_jugador)
         if rectangulos:
@@ -787,7 +781,7 @@ def pantalla_nuevo_record(screen, clock, imagen_record, puntuacion, nombre_jugad
 def dibujar_pantalla_nuevo_record(screen, opciones, opcion_seleccionada, contador_parpadeo, imagen_record, puntuacion, nombre_jugador):
     """Dibuja la pantalla de nuevo récord - VERSIÓN CON DEBUG"""
     font_subtitulo = pygame.font.Font(None, 48)
-    font_botones = pygame.font.Font(None, 36)
+    font_botones = pygame.font.SysFont("impact", 36)
     font_small = pygame.font.Font(None, 28)
 
     screen.blit(imagen_record, (0, 0))
@@ -804,7 +798,7 @@ def dibujar_pantalla_nuevo_record(screen, opciones, opcion_seleccionada, contado
     
     # Mensaje de felicitación
     mensaje = "¡Eres el mejor defensor del planeta!"
-    texto_mensaje = font_small.render(mensaje, True, COLOR_GRIS)
+    texto_mensaje = font_small.render(mensaje, True, COLOR_BLANCO)
     mensaje_x = SCREEN_WIDTH // 2 - texto_mensaje.get_width() // 2
     screen.blit(texto_mensaje, (mensaje_x, 250))
 
@@ -877,33 +871,32 @@ def pantalla_nuevo_record_solo_guardar(screen, clock, imagen_record, puntuacion)
     return nombre_jugador 
 
 
-# ===== SISTEMA CORREGIDO: ENEMIGOS CONTINUOS INFINITOS =====
 
 def gestionar_aparicion_continua(enemigos1, enemigos2, atunes, milks, timer_powerups, segundos):
     """Sistema de aparición continua - NUNCA se agotan los enemigos"""
     import random
     
-    # ✅ 1. RECICLAJE AGRESIVO: Enemigos que salen de pantalla se reciclan inmediatamente
+    # RECICLAJE AGRESIVO: Enemigos que salen de pantalla se reciclan inmediatamente
     reciclar_enemigos_agresivo(enemigos1)
     if segundos >= 60:
         reciclar_enemigos_agresivo(enemigos2)
     
-    # ✅ 2. CREACIÓN DINÁMICA: Si se agotan enemigos, crear más inmediatamente
+    # CREACIÓN DINÁMICA: Si se agotan enemigos, crear más inmediatamente
     asegurar_stock_enemigos(enemigos1, enemigos2, segundos)
     
-    # ✅ 3. CONTROL DE POWER-UPS (sin cambios)
+    # CONTROL DE POWER-UPS 
     gestionar_powerups_controlado(atunes, milks, timer_powerups)
     
-    # ✅ 4. ACTIVACIÓN CONTINUA DE ENEMIGOS
+    # ACTIVACIÓN CONTINUA DE ENEMIGOS
     if segundos < 60:
         # PRIMER MINUTO: Solo enemigos1, pero SIEMPRE presentes
         mantener_enemigos_activos(enemigos1, cantidad_minima=8, cantidad_maxima=12)
     else:
-        # DESPUÉS DEL MINUTO: Mix de enemigos1 y enemigos2, SIEMPRE presentes
+        # DESPUÉS DEL MINUTO: Mix de enemigos1 y enemigos2
         mantener_enemigos_activos(enemigos1, cantidad_minima=6, cantidad_maxima=10)
         mantener_enemigos_activos(enemigos2, cantidad_minima=2, cantidad_maxima=5)
     
-    # ✅ 5. ACTUALIZAR TODO
+    # ACTUALIZAR TODOS LOS OBJETOS
     actualizar_todos_los_objetos(enemigos1, enemigos2, atunes, milks)
 
 def reciclar_enemigos_agresivo(lista_enemigos):
@@ -912,9 +905,9 @@ def reciclar_enemigos_agresivo(lista_enemigos):
     
     for enemigo in lista_enemigos:
         # Condiciones para reciclar:
-        # 1. No está activo Y (salió de pantalla O tiene tiempo de espera alto)
+        # No está activo Y (salió de pantalla O tiene tiempo de espera alto)
         if not enemigo["activo"] and (enemigo["y"] > SCREEN_HEIGHT + 50 or enemigo["tiempo_espera"] > 300):
-            # ✅ RESETEO COMPLETO E INMEDIATO
+            # RESETEO COMPLETO E INMEDIATO
             enemigo["x"] = random.randint(0, SCREEN_WIDTH - 85)
             enemigo["y"] = random.randint(-400, -50)
             enemigo["velocidad_y"] = random.randint(3, 6)
@@ -928,7 +921,7 @@ def reciclar_enemigos_agresivo(lista_enemigos):
 def asegurar_stock_enemigos(enemigos1, enemigos2, segundos):
     """Asegura que siempre haya suficientes enemigos disponibles"""
     
-    # ✅ CONTAR ENEMIGOS1 DISPONIBLES (activos + inactivos reciclables)
+    # CONTAR ENEMIGOS1 DISPONIBLES (activos + inactivos reciclables)
     enemigos1_disponibles = len([e for e in enemigos1 
                                 if not e["activo"] and e["y"] <= SCREEN_HEIGHT + 50])
     
@@ -936,7 +929,7 @@ def asegurar_stock_enemigos(enemigos1, enemigos2, segundos):
         nuevos_enemigos1 = crear_objetos(crear_enemigo, 50)
         enemigos1.extend(nuevos_enemigos1)
     
-    # ✅ LO MISMO PARA ENEMIGOS2 (solo después del minuto)
+    # LO MISMO PARA ENEMIGOS2 (solo después del minuto)
     if segundos >= 60:
         enemigos2_disponibles = len([e for e in enemigos2 
                                     if not e["activo"] and e["y"] <= SCREEN_HEIGHT + 50])
@@ -959,7 +952,7 @@ def mantener_enemigos_activos(lista_enemigos, cantidad_minima, cantidad_maxima):
         
         for enemigo in lista_enemigos:
             if not enemigo["activo"]:
-                # ✅ ACTIVAR INMEDIATAMENTE
+                # ACTIVAR INMEDIATAMENTE
                 enemigo["activo"] = True
                 enemigo["tiempo_espera"] = 0
                 
@@ -993,16 +986,15 @@ def actualizar_todos_los_objetos(enemigos1, enemigos2, atunes, milks):
         for objeto in lista:
             caer_objeto(objeto)
 
-# ===== REEMPLAZAR EN TU pantalla_juego() =====
 
 def pantalla_juego(screen, clock, imagen_pantalla_juego):
     """Pantalla de juego con enemigos continuos infinitos"""
     
-    font_small = pygame.font.Font(None, 32)
-    contador_vidas = 7
+    font_small = pygame.font.SysFont("consolas", 32)
+    contador_vidas = 3
     contador_puntaje = 0
     
-    # Música y sonidos (sin cambios)
+    # Música, sonidos e imagenes
     cargar_musica("assets/sounds/music/game_music.ogg")
     reproducir_musica(volumen=0.1)
     sonido_disparo = pygame.mixer.Sound(RUTA_SONIDO_DISPARO)
@@ -1013,13 +1005,15 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     sonido_powerup.set_volume(VOLUMEN_SONIDO_POWER_UP)
     sonido_enemigo_muerto = pygame.mixer.Sound(RUTA_SONIDO_MUERTE_PERRO)
     sonido_enemigo_muerto.set_volume(VOLUMEN_SONIDO_MUERTE_PERRO)
+    icono_bullets = pygame.image.load("assets/images/Balas/dobledisparo.png")
+    icono_pequeno = pygame.transform.scale(icono_bullets, (24, 24))
     
     # Crear entidades
     imagen_jugador, rect_jugador, velocidad_jugador = crear_jugador(screen.get_width(), screen.get_height())
     balas = []
     disparar = False
     
-    # ✅ ENEMIGOS: Stock inicial grande para asegurar continuidad
+    # ENEMIGOS: Stock inicial grande para asegurar continuidad
     enemigos1 = crear_objetos(crear_enemigo, 200)    # Stock grande de enemigos1
     enemigos2 = crear_objetos(crear_enemigo2, 100)   # Stock grande de enemigos2 desde el inicio
     
@@ -1043,19 +1037,19 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     juego_activo = 1
     while juego_activo:
         
-        # Eventos (sin cambios)
+        # Eventos 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "SALIR"
         
-        # Movimiento y disparo (sin cambios)
+        # Movimiento y disparo 
         keys = pygame.key.get_pressed()
         mover_jugador(rect_jugador, keys, screen.get_width(), screen.get_height(), velocidad_jugador)
         
         tiempo_actual = pygame.time.get_ticks()
         segundos_transcurridos = (tiempo_actual - tiempo_inicio) // 1000
         
-        # Sistema de disparo (sin cambios)
+        # Sistema de disparo 
         if keys[pygame.K_SPACE]:
             if not disparar:
                 sonido_disparo.play()
@@ -1069,34 +1063,34 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         else:
             disparar = False
 
-        # Lógica del doble disparo (sin cambios)
+        # Lógica del doble disparo 
         if doble_disparo_activo:
             doble_disparo_timer -= 1
             if doble_disparo_timer <= 0:
                 doble_disparo_activo = False
         
-        # Movimiento de balas (sin cambios)
+        # Movimiento de balas 
         for bala in balas[:]:
             imagen, rect, velocidad = bala
             mover_bala(rect, velocidad)
             if bala_fuera_de_pantalla(rect):
                 balas.remove(bala)
         
-        # ✅ SISTEMA CORREGIDO: Aparición continua
+        # SISTEMA CORREGIDO: Aparición continua
         gestionar_aparicion_continua(
             enemigos1, enemigos2, atunes, milks, 
             timer_powerups, segundos_transcurridos
         )
         timer_powerups += 1
 
-        # 🆕 VERIFICAR ENEMIGOS QUE TOCAN EL PISO Y APLICAR PENALIZACIÓN
+        # VERIFICAR ENEMIGOS QUE TOCAN EL PISO Y APLICAR PENALIZACIÓN
         puntos_perdidos = verificar_enemigos_en_piso(enemigos1, enemigos2, contador_puntaje)
         contador_puntaje -= puntos_perdidos
 
         if contador_puntaje < 0:
             contador_puntaje = 0
         
-        # ✅ COLISIONES: Solo usar enemigos según la fase
+        # COLISIONES: Solo usar enemigos según la fase
         if segundos_transcurridos < 60:
             # PRIMER MINUTO: Solo enemigos1
             resultados_colision = procesar_colisiones_completas(
@@ -1108,7 +1102,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
                 rect_jugador, balas, enemigos1, enemigos2, atunes, milks
             )
         
-        # Resto de la lógica (sin cambios)
+        # Resto de la lógica 
         if resultados_colision["jugador_golpeado"] and not jugador_parpadeando:
             contador_vidas -= 1
             jugador_parpadeando = True
@@ -1134,7 +1128,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             detener_musica()
             return "GAME_OVER", contador_puntaje
         
-        # ✅ RENDERIZADO: Solo dibujar enemigos según la fase
+        # RENDERIZADO: Solo dibujar enemigos según la fase
         screen.blit(imagen_pantalla_juego, (0, 0))
         
         # Dibujar enemigos1 (siempre)
@@ -1152,7 +1146,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
                     else:
                         screen.blit(imagen_enemigo2_escalada, (enemigo2["x"], enemigo2["y"]))
         
-        # Resto del renderizado (sin cambios)
+        # Resto del renderizado 
         for atun in atunes:
             if atun["activo"]:
                 screen.blit(atun_escalada, (atun["x"], atun["y"]))
@@ -1161,7 +1155,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
             if milk["activo"]:
                 screen.blit(milk_escalada, (milk["x"], milk["y"]))
         
-        # Dibujar jugador con parpadeo (sin cambios)
+        # Dibujar jugador con parpadeo 
         tiempo_actual = pygame.time.get_ticks()
         if jugador_parpadeando:
             if tiempo_actual - inicio_parpadeo > duracion_parpadeo:
@@ -1173,14 +1167,14 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
         else:
             dibujar_jugador(screen, imagen_jugador, rect_jugador)
 
-        # Dibujar balas (sin cambios)
+        # Dibujar balas 
         for bala in balas:
             imagen, rect, _ = bala
             dibujar_bala(screen, imagen, rect)
 
-        # UI mejorada (sin cambios)
+        # UI mejorada 
         dibujar_ui_optimizada(screen, font_small, contador_vidas, contador_puntaje, 
-                            doble_disparo_activo, doble_disparo_timer, segundos_transcurridos)
+                            doble_disparo_activo, doble_disparo_timer, segundos_transcurridos, icono_pequeno)
         
         pygame.display.flip()
         clock.tick(FPS)
