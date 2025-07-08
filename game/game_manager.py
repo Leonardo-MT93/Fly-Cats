@@ -980,7 +980,7 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     """Pantalla de juego con enemigos continuos infinitos"""
     
     font_small = pygame.font.SysFont("consolas", 32)
-    contador_vidas = 3
+    contador_vidas = 7
     contador_puntaje = 0
     
     # Música, sonidos e imagenes
