@@ -4,7 +4,7 @@ import pygame
 from config import *
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
-from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla
+from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla, crear_doblebala
 from game.enemies import crear_enemigo, crear_enemigo2, imagen_enemigo1_escalada, imagen_enemigo2_escalada
 from game.powerups import crear_atun, crear_milk, atun_escalada, milk_escalada
 from utils import crear_objetos, caer_objeto
@@ -702,17 +702,6 @@ def procesar_todas_las_colisiones(rect_jugador, balas, enemigos, atunes, milks):
         "enemigo_eliminado": colision_balas,
         "powerup": powerup_recolectado
     }
-
-
-def crear_doblebala(x,y):
-    """
-    Crea dos balas: una a la izquierda y otra a la derecha del jugador.
-    """
-    imagen_bala1, rect_bala1, velocidad_bala1 = crear_bala(x - 15, y)
-    imagen_bala2, rect_bala2, velocidad_bala2 = crear_bala(x + 15, y)
-    
-    return [(imagen_bala1, rect_bala1, velocidad_bala1), (imagen_bala2, rect_bala2, velocidad_bala2)]
-
 
 def pantalla_nuevo_record(screen, clock, imagen_record, puntuacion, nombre_jugador):    
     cargar_musica(RUTA_MUSICA_RECORD)
