@@ -44,3 +44,12 @@ def bala_fuera_de_pantalla(rect) -> bool:
         False en caso contrario.
     """
     return rect.bottom < 0
+
+def crear_doblebala(x,y):
+    """
+    Crea dos balas: una a la izquierda y otra a la derecha del jugador.
+    """
+    imagen_bala1, rect_bala1, velocidad_bala1 = crear_bala(x - 15, y)
+    imagen_bala2, rect_bala2, velocidad_bala2 = crear_bala(x + 15, y)
+    
+    return [(imagen_bala1, rect_bala1, velocidad_bala1), (imagen_bala2, rect_bala2, velocidad_bala2)]
