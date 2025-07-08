@@ -421,7 +421,6 @@ def gestionar_aparicion_optimizada(enemigos1, enemigos2, atunes, milks, timer_po
     
     # ✅ ACTIVACIÓN FORZADA DE ENEMIGOS: Asegurar que siempre haya enemigos
     enemigos1_activos = sum(1 for e in enemigos1 if e["activo"])
-    activar_enemigos(enemigos1, enemigos2, segundos)
     if enemigos1_activos < 6:  # Máximo 6 enemigos1
         forzar_activacion_enemigos(enemigos1, 6 - enemigos1_activos)
     
