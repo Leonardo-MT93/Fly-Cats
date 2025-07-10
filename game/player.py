@@ -1,13 +1,13 @@
 # Archivo de configuraciones a cargo de Agos! 
 import pygame
-import config
+from config import RUTA_PLAYER
 def crear_jugador(screen_width, screen_height) -> tuple:
     """
     Crea y devuelve el jugador con su imagen, posición y velocidad inicial.
 
     """
 
-    imagen = pygame.image.load("assets/images/player/gato.png").convert_alpha()
+    imagen = pygame.image.load(RUTA_PLAYER).convert_alpha()
     imagen = pygame.transform.scale(imagen, (85, 85))
     rect = imagen.get_rect()
     rect.centerx = screen_width // 2

@@ -1,9 +1,32 @@
 # Archivo de configuraciones a cargo de León! 
-from config import *
-import pygame
-import csv
 import sys
 import random
+
+import pygame
+import csv
+
+from config import (
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    TITULO_JUEGO,
+    RUTA_ICONO_JUEGO,
+    RUTA_IMAGEN_INTRO_1,
+    RUTA_IMAGEN_INTRO_2,
+    RUTA_IMAGEN_INTRO_3,
+    RUTA_IMAGEN_INTRO_4,
+    RUTA_IMAGEN_FONDO_MENU_PRINCIPAL,
+    RUTA_IMAGEN_FIN_DEL_JUEGO,
+    RUTA_IMAGEN_PANTALLA_JUEGO,
+    RUTA_IMAGEN_NUEVO_RECORD,
+    RUTA_CSV_PUNTUACIONES,
+    COLOR_AMARILLO,
+    COLOR_BLANCO,
+    COLOR_VERDE,
+    COLOR_GRIS,
+    FPS
+)
+
+
 
 def cargar_imagen_fondo(ruta_imagen):
     """Carga y escala la imagen de fondo"""
@@ -77,7 +100,7 @@ def reproducir_musica_si_necesario(ruta_musica, volumen):
         print("La música ya se está reproduciendo.")
 
 #Funciones para manejar el archivo csv
-def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
+def leer_puntuaciones_csv(archivo=RUTA_CSV_PUNTUACIONES):
     """Lee las puntuaciones desde un archivo CSV"""
     puntuaciones = []
     archivo_csv = open(archivo, 'r', encoding='utf-8') #aca abro el archivo en modo lectura 'r' con la codificcion UTF8
@@ -105,18 +128,18 @@ def leer_puntuaciones_csv(archivo="assets/puntuaciones.csv"):
 
     return puntuaciones[:10]  # solamente muestra el top10
 
-def agregar_puntuacion_csv(nombre, puntuacion, archivo="assets/puntuaciones.csv"):
+def agregar_puntuacion_csv(nombre, puntuacion, archivo=RUTA_CSV_PUNTUACIONES):
     """Agrega una nueva puntuación al archivo CSV"""
     # Abrir archivo y lo agrega al final
     archivo_csv = open(archivo, 'a', encoding='utf-8', newline='')
-    escritor = csv.writer(archivo_csv)
+    escritor = csv.writer(archivo_csv) #esta funcion crea un objeto escritor que permite escribir en el archivo csv
     
     # Escribir la nueva puntuación
-    escritor.writerow([nombre, puntuacion])
+    escritor.writerow([nombre, puntuacion]) #con esta funcion se escribe una nueva fila en el archivo csv
     
     archivo_csv.close()
 
-def es_nuevo_record(puntuacion, archivo="assets/puntuaciones.csv"):
+def es_nuevo_record(puntuacion, archivo=RUTA_CSV_PUNTUACIONES):
     """Verifica si la puntuación es un nuevo récord"""
     puntuaciones = leer_puntuaciones_csv(archivo)
     
@@ -140,7 +163,7 @@ def obtener_nombre_jugador(screen, clock, imagen_fondo):
     contador_cursor = 0
 
     # Carga ed la imagen Record
-    imagen_record = pygame.image.load("assets/images/fondos/record.png")
+    imagen_record = pygame.image.load(RUTA_IMAGEN_NUEVO_RECORD)
     imagen_record = pygame.transform.scale(imagen_record, (SCREEN_WIDTH, SCREEN_HEIGHT))
     
     juego_activo = 1

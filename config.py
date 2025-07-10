@@ -22,9 +22,14 @@ RUTA_IMAGEN_INTRO_1 = "assets/images/intro/intro01.png"
 RUTA_IMAGEN_INTRO_2 = "assets/images/intro/intro02.png" 
 RUTA_IMAGEN_INTRO_3 = "assets/images/intro/intro03.png"
 RUTA_IMAGEN_INTRO_4 = "assets/images/intro/intro04.png"
-
-
-DURACION_INTRO = 5000  
+RUTA_BULLET = "assets/images/Balas/bola-estambre.png"
+RUTA_BULLET_DOBLE = "assets/images/Balas/dobledisparo.png"
+RUTA_ENEMIGO1 = "assets/images/enemies/Perro_robot_cayendo.png"
+RUTA_ENEMIGO2 = "assets/images/enemies/Enemigo2.png"
+RUTA_PLAYER = "assets/images/player/gato.png"
+RUTA_POWER_UP_ATUN = "assets/images/powerups/atun.png"
+RUTA_POWER_UP_MILK = "assets/images/powerups/milk.png"
+DURACION_INTRO = 5000
 
 #Musica
 RUTA_MUSICA_MENU = "assets/sounds/music/menu_music.ogg"
@@ -44,7 +49,7 @@ RUTA_SONIDO_MAULLIDO_GATO = "assets/sounds/effects/maullido-gato.ogg"
 VOLUMEN_SONIDO_MAULLIDO_GATO = 0.4
 RUTA_SONIDO_MUERTE_PERRO = "assets/sounds/effects/golpe-perro.ogg"
 VOLUMEN_SONIDO_MUERTE_PERRO = 0.1
-RUTA_SONIDA_POWER_UP = "assets/sounds/effects/Power-up.ogg"
+RUTA_SONIDO_POWER_UP = "assets/sounds/effects/Power-up.ogg"
 VOLUMEN_SONIDO_POWER_UP = 0.4
 
 #Puntuaciones

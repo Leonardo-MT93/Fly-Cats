@@ -1,12 +1,14 @@
 # Archivo de configuraciones a cargo de Agos! import pygame
 import pygame
+
+from config import RUTA_BULLET
 def crear_bala(x, y) -> tuple:
     """
     Crea una bala en forma de bola de estambre en una posición dada.
 
     """
 
-    imagen = pygame.image.load("assets/images/Balas/bola-estambre.png").convert_alpha()
+    imagen = pygame.image.load(RUTA_BULLET).convert_alpha()
     imagen = pygame.transform.scale(imagen, (25, 25))
     rect = imagen.get_rect(center=(x, y))
     velocidad = -8

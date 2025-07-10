@@ -1,6 +1,19 @@
-from config import *
-from utils import *
-from game.game_manager import *
+from config import (
+    ESTADO_INTRO,
+    ESTADO_MENU,
+    ESTADO_JUEGO,
+    ESTADO_NUEVO_RECORD,
+    ESTADO_GAME_OVER,
+)
+from utils import finalizar_juego, iniciar_juego, cargar_todas_las_imagenes
+from game.game_manager import (
+    manejar_estado_intro,
+    manejar_estado_menu_principal,
+    manejar_estado_juego,
+    manejar_estado_nuevo_record,
+    manejar_estado_gameover,
+)
+
 
 def main():
     screen, clock = iniciar_juego()

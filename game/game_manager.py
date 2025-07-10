@@ -1,7 +1,45 @@
 # Archivo de configuraciones a cargo de León! 
-
+import random
 import pygame
-from config import *
+from config import (
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    RUTA_MUSICA_MENU,
+    RUTA_MUSICA_GAME_OVER,
+    RUTA_MUSICA_INTRO,
+    RUTA_MUSICA_GAME,
+    COLOR_AMARILLO,
+    COLOR_BLANCO,
+    COLOR_GRIS,
+    COLOR_ROJO,
+    COLOR_VERDE,
+    FPS,
+    VOLUMEN_MENU,
+    VOLUMEN_MUSICA_INTRO,
+    VOLUMEN_MUSICA_RECORD,
+    VOLUMEN_GAME_OVER,
+    DURACION_INTRO,
+    RUTA_MUSICA_RECORD,
+    OPCIONES_MENU_PRINCIPAL,
+    OPCIONES_GAME_OVER,
+    OPCIONES_RECORD,
+    ESTADO_INTRO,
+    ESTADO_NUEVO_RECORD,
+    ESTADO_MENU,
+    ESTADO_JUEGO,
+    ESTADO_GAME_OVER,
+    RUTA_SONIDO_POWER_UP,
+    RUTA_SONIDO_DISPARO,
+    RUTA_SONIDO_MAULLIDO_GATO,
+    RUTA_SONIDO_MUERTE_PERRO,
+    RUTA_BULLET_DOBLE,
+    VOLUMEN_SONIDO_DISPARO,
+    VOLUMEN_SONIDO_MAULLIDO_GATO,
+    VOLUMEN_SONIDO_MUERTE_PERRO,
+    VOLUMEN_SONIDO_POWER_UP,
+)
+
+
 from utils import  cargar_musica, reproducir_musica, detener_musica, mostrar_modal_puntuaciones, mostrar_modal_creditos, reproducir_musica_si_necesario, es_nuevo_record, agregar_puntuacion_csv, obtener_nombre_jugador
 from game.player import crear_jugador, mover_jugador, dibujar_jugador
 from game.bullet import crear_bala, mover_bala, dibujar_bala, bala_fuera_de_pantalla, crear_doblebala
@@ -58,12 +96,6 @@ def dibujar_menu_principal(screen, opciones, opcion_seleccionada, contador_parpa
         #Rectangulos creados a partir de cada opción del menú
         rect = pygame.Rect(x - 50 , y - 10, texto.get_width() + 100, texto.get_height() + 20)
         rectangulos.append(rect)
-
-        # DIibujo test de cada rectangulo
-        # if i == opcion_seleccionada:
-        #     pygame.draw.rect(screen, (255, 255, 0), rect, 3)  # Amarillo para seleccionado
-        # else:
-        #     pygame.draw.rect(screen, (255, 0, 0), rect, 2)     # Rojo para no seleccionado
         
         if i == opcion_seleccionada:
             indicador = font_botones.render(">", True, COLOR_AMARILLO)
@@ -79,8 +111,7 @@ def pantalla_menu_principal(screen, clock, imagen_fondo):
     contador_parpadeo = 0
     
     reproducir_musica_si_necesario(RUTA_MUSICA_MENU, VOLUMEN_MENU)
-    # cargar_musica("assets/sounds/music/menu_music.ogg")
-    # reproducir_musica(volumen=0.1)
+
     
     juego_activo = 1
     while juego_activo:
@@ -391,10 +422,8 @@ def manejar_estado_intro(screen, clock, imagenes):
         case _:
             return ESTADO_MENU, 0
     
-
 def gestionar_aparicion_optimizada(enemigos1, enemigos2, atunes, milks, timer_powerups, segundos):
     """Gestión optimizada con reciclaje infinito de enemigos"""
-    import random
     
     # RECICLAJE DE ENEMIGOS: Reactivar enemigos que salieron de pantalla
     reciclar_enemigos_infinitos(enemigos1)
@@ -432,7 +461,6 @@ def gestionar_aparicion_optimizada(enemigos1, enemigos2, atunes, milks, timer_po
 
 def reciclar_enemigos_infinitos(lista_enemigos):
     """Recicla enemigos que salieron de pantalla para reutilizarlos"""
-    import random
     
     for enemigo in lista_enemigos:
         # Si el enemigo está inactivo y salió de pantalla, reciclarlo
@@ -449,7 +477,6 @@ def reciclar_enemigos_infinitos(lista_enemigos):
 
 def forzar_activacion_enemigos(lista_enemigos, cantidad_necesaria):
     """Fuerza la activación de enemigos si no hay suficientes"""
-    import random
     
     activados = 0
     intentos = 0
@@ -474,7 +501,6 @@ def forzar_activacion_enemigos(lista_enemigos, cantidad_necesaria):
         
         intentos += 1
 
-
 def activar_objeto_aleatorio(lista_objetos, nombre):
     """Activa un objeto aleatorio de la lista"""
     for objeto in lista_objetos:
@@ -492,8 +518,6 @@ def activar_enemigos_gradual(lista_enemigos, cantidad):
             activados += 1
             if activados >= cantidad:
                 break
-
-# ===== SISTEMA DE COLISIONES COMPLETO =====
 
 def procesar_colisiones_completas(rect_jugador, balas, enemigos1, enemigos2, atunes, milks):
     """Procesa todas las colisiones con lógica de 2 disparos para enemigos2"""
@@ -607,25 +631,24 @@ def dibujar_ui_optimizada(screen, font, vidas, puntaje, doble_disparo_activo, do
         texto_dificil = font.render("MODO DIFÍCIL ACTIVADO", True, COLOR_ROJO)
         screen.blit(texto_dificil, (20, y_siguiente))
 
-# def dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas):
-#     """
-#     Dibuja rectángulos para debug
-#     - Jugador: Amarillo
-#     - Enemigos: Rojo  
-#     - Balas: Verde
-#     """
-#     pygame.draw.rect(screen, (255, 255, 0), rect_jugador, 3)
+def dibujar_rectangulos_debug(screen, rect_jugador, enemigos, balas):
+    """
+    Dibuja rectángulos para debug
+    - Jugador: Amarillo
+    - Enemigos: Rojo  
+    - Balas: Verde
+    """
+    pygame.draw.rect(screen, (255, 255, 0), rect_jugador, 3)
     
-#     for enemigo in enemigos:
-#         if enemigo["activo"]:
-#             rect_enemigo = pygame.Rect(enemigo["x"], enemigo["y"], 85, 85)
-#             pygame.draw.rect(screen, (255, 0, 0), rect_enemigo, 3)
+    for enemigo in enemigos:
+        if enemigo["activo"]:
+            rect_enemigo = pygame.Rect(enemigo["x"], enemigo["y"], 85, 85)
+            pygame.draw.rect(screen, (255, 0, 0), rect_enemigo, 3)
     
-#     for bala in balas:
-#         if isinstance(bala, tuple) and len(bala) >= 2:
-#             rect_bala = bala[1]
-#             pygame.draw.rect(screen, (0, 255, 0), rect_bala, 3) 
-
+    for bala in balas:
+        if isinstance(bala, tuple) and len(bala) >= 2:
+            rect_bala = bala[1]
+            pygame.draw.rect(screen, (0, 255, 0), rect_bala, 3) 
 
 def detectar_colisiones_perros(rect_jugador, enemigos):
     """
@@ -859,11 +882,8 @@ def pantalla_nuevo_record_solo_guardar(screen, clock, imagen_record, puntuacion)
         
     return nombre_jugador 
 
-
-
 def gestionar_aparicion_continua(enemigos1, enemigos2, atunes, milks, timer_powerups, segundos):
     """Sistema de aparición continua - NUNCA se agotan los enemigos"""
-    import random
     
     # RECICLAJE AGRESIVO: Enemigos que salen de pantalla se reciclan inmediatamente
     reciclar_enemigos_agresivo(enemigos1)
@@ -890,7 +910,6 @@ def gestionar_aparicion_continua(enemigos1, enemigos2, atunes, milks, timer_powe
 
 def reciclar_enemigos_agresivo(lista_enemigos):
     """Reciclaje inmediato y agresivo de enemigos"""
-    import random
     
     for enemigo in lista_enemigos:
         # Condiciones para reciclar:
@@ -929,7 +948,6 @@ def asegurar_stock_enemigos(enemigos1, enemigos2, segundos):
 
 def mantener_enemigos_activos(lista_enemigos, cantidad_minima, cantidad_maxima):
     """Mantiene una cantidad específica de enemigos activos SIEMPRE"""
-    import random
     
     # Contar enemigos activos
     activos = sum(1 for e in lista_enemigos if e["activo"])
@@ -954,10 +972,8 @@ def mantener_enemigos_activos(lista_enemigos, cantidad_minima, cantidad_maxima):
                 if activados >= necesarios:
                     break
         
-
 def gestionar_powerups_controlado(atunes, milks, timer_powerups):
     """Control de power-ups sin cambios"""
-    import random
     
     powerups_activos = sum(1 for atun in atunes if atun["activo"]) + \
                        sum(1 for milk in milks if milk["activo"])
@@ -975,7 +991,6 @@ def actualizar_todos_los_objetos(enemigos1, enemigos2, atunes, milks):
         for objeto in lista:
             caer_objeto(objeto)
 
-
 def pantalla_juego(screen, clock, imagen_pantalla_juego):
     """Pantalla de juego con enemigos continuos infinitos"""
     
@@ -984,17 +999,17 @@ def pantalla_juego(screen, clock, imagen_pantalla_juego):
     contador_puntaje = 0
     
     # Música, sonidos e imagenes
-    cargar_musica("assets/sounds/music/game_music.ogg")
+    cargar_musica(RUTA_MUSICA_GAME)
     reproducir_musica(volumen=0.1)
     sonido_disparo = pygame.mixer.Sound(RUTA_SONIDO_DISPARO)
     sonido_disparo.set_volume(VOLUMEN_SONIDO_DISPARO)
     sonido_maullido = pygame.mixer.Sound(RUTA_SONIDO_MAULLIDO_GATO)
     sonido_maullido.set_volume(VOLUMEN_SONIDO_MAULLIDO_GATO)
-    sonido_powerup = pygame.mixer.Sound(RUTA_SONIDA_POWER_UP)
+    sonido_powerup = pygame.mixer.Sound(RUTA_SONIDO_POWER_UP)
     sonido_powerup.set_volume(VOLUMEN_SONIDO_POWER_UP)
     sonido_enemigo_muerto = pygame.mixer.Sound(RUTA_SONIDO_MUERTE_PERRO)
     sonido_enemigo_muerto.set_volume(VOLUMEN_SONIDO_MUERTE_PERRO)
-    icono_bullets = pygame.image.load("assets/images/Balas/dobledisparo.png")
+    icono_bullets = pygame.image.load(RUTA_BULLET_DOBLE)
     icono_pequeno = pygame.transform.scale(icono_bullets, (24, 24))
     
     # Crear entidades
