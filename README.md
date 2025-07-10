@@ -9,8 +9,6 @@
 ## 🌟 La Triada Salvaje - Nuestro Equipo
 
 ### 🦁 Leonardo (León) - Arquitecto & Game Manager
-- **Espíritu Animal:** León - El rey que coordina la manada
-- **Poderes:** Rugido organizador, visión estratégica de la selva del código
 - **Responsabilidades:** 
   - Arquitectura del sistema de estados
   - Integración de módulos y componentes
@@ -22,8 +20,6 @@
 - **GitHub:** [@Leonardo-MT93](https://github.com/Leonardo-MT93)
 
 ### 🦋 Agostina (Mariposa) - Player & Interaction Systems
-- **Espíritu Animal:** Mariposa - Transformación elegante y vuelo grácil
-- **Poderes:** Metamorfosis de código, movimientos fluidos como el viento
 - **Responsabilidades:** 
   - Sistema de movimiento del jugador
   - Mecánicas de control y input
@@ -35,8 +31,6 @@
 - **GitHub:** [@agosramos299](https://github.com/agosramos299)
 
 ### 🐅 Vish (Tigre Blanco) - Enemies & Game Balance
-- **Espíritu Animal:** Tigre Blanco - Cazadora misteriosa y letal
-- **Poderes:** Instinto depredador, precisión felina en cada línea de código
 - **Responsabilidades:** 
   - Sistema de enemigos y patrones de movimiento
   - Sistema de power-ups y balanceado
